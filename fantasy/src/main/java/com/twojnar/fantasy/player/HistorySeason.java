@@ -1,5 +1,6 @@
 package com.twojnar.fantasy.player;
 
+
 public class HistorySeason {
 	
 	private String season_name;

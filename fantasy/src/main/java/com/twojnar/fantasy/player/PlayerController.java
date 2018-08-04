@@ -9,6 +9,7 @@ import java.util.Map;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -32,12 +33,12 @@ public class PlayerController {
 	}
 	
 	@GetMapping(value = "/players/{playerId}")
-	public List<HistorySeason> retrievePlayerById(@PathVariable int playerId) throws IOException {
-		Map<String, String> mapa = new HashMap<String, String>();
-		List<HistorySeason> seasons = new ArrayList<HistorySeason>();
+	public ResponseEntity<List> retrievePlayerById(@PathVariable int playerId) throws IOException {
+		//Map<String, String> mapa = new HashMap<String, String>();
+		//List<HistorySeason> seasons = new ArrayList<HistorySeason>();
 		for (Player player : playerService.getPlayers()) {
-			if (player.getFantasyId() == playerId) seasons =  player.getHistoricalSeasons();
+			if (player.getFantasyId() == playerId) return ResponseEntity.ok(player.getHistoricalSeasons());
 		}
-		return seasons;
+		return ResponseEntity.noContent().build();
 	}
 }
