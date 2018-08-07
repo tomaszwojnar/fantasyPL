@@ -12,6 +12,4 @@ public interface TeamRepository extends MongoRepository<Team, String> {
 		boolean existsByName(String Name);
 
 	    public Team findByName(String name);
-	    
-	    
 }

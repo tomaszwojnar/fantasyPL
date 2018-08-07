@@ -3,7 +3,9 @@ package com.twojnar.fantasy.team;
 import java.io.Serializable;
 import java.util.Date;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -12,7 +14,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 @Document(collection = "teams")
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Team implements Serializable {
-	
+		
 	private String id;
 	@JsonProperty("id")
 	private int fantasyId;
@@ -35,6 +37,16 @@ public class Team implements Serializable {
     private int strength_attack_away;
     private int strength_defence_home;
     private int strength_defence_away;
+    
+    
+    public Team () {
+    	super();
+    }
+    
+    public Team (int identifier) {
+    	super();
+    	this.fantasyId = identifier;
+    }
 	
     @JsonIgnore
     public String getId() {
@@ -199,15 +211,4 @@ public class Team implements Serializable {
 			return false;
 		return true;
 	}
-	
-	
-    
-    
-    
-    
-	
-	
-	
-
-	
 }

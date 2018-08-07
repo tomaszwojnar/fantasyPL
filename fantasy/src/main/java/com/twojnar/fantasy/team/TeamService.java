@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
@@ -18,7 +19,6 @@ public class TeamService {
 	private TeamRepository teamRepository;
 	
 	private List<Team> teams = new ArrayList<Team>();
-	
 	
 	public void updateFromDB() {
 		this.teams = teamRepository.findAll();
@@ -56,6 +56,13 @@ public class TeamService {
 		};
 		this.saveTeams();
 	}
+	
+	public Team getTeamByFantasyId(int id) {
+		return this.teams.stream()
+		.filter(e -> e.getFantasyId() == id).collect(Collectors.toList()).get(0);
+	}
+	
+	
 
 	public List<Team> getTeams() {
 		return teams;
