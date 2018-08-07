@@ -16,6 +16,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class Team implements Serializable {
 		
 	private String id;
+	
 	@JsonProperty("id")
 	private int fantasyId;
 	private String name;
@@ -47,6 +48,8 @@ public class Team implements Serializable {
     	super();
     	this.fantasyId = identifier;
     }
+    
+    
 	
     @JsonIgnore
     public String getId() {

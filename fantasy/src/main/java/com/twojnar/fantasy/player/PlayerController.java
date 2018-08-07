@@ -24,21 +24,4 @@ public class PlayerController {
 	@Autowired
 	PlayerService playerService;
 	
-	@RequestMapping(value = "/players", method = RequestMethod.GET, produces = "application/json")
-	public Map retrievePlayersByCriteria(@RequestParam(value="name", required=true) String playerName) throws IOException {
-		Map<String, String> mapa = new HashMap<String, String>();
-		mapa.put("Imię", playerName);
-		return mapa;
-
-	}
-	
-	@GetMapping(value = "/players/{playerId}")
-	public ResponseEntity<List> retrievePlayerById(@PathVariable int playerId) throws IOException {
-		//Map<String, String> mapa = new HashMap<String, String>();
-		//List<HistorySeason> seasons = new ArrayList<HistorySeason>();
-		for (Player player : playerService.getPlayers()) {
-			if (player.getFantasyId() == playerId) return ResponseEntity.ok(player.getHistoricalSeasons());
-		}
-		return ResponseEntity.noContent().build();
-	}
 }

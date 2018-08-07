@@ -3,34 +3,27 @@ package com.twojnar.fantasy.player;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.data.mongodb.core.mapping.Field;
-import org.springframework.stereotype.Component;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Document(collection = "players")
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Player {
 	
-	
+	@JsonIgnore
 	private String id;
-	@Field("fantasyId")
+	
+	@JsonProperty("id")
 	private int fantasyId;
 	
-	@Field("name")
-	private String firstName;
-	private String lastName;
+	private PlayerProfile playerProfile;
 	
-	@Field("history_past")
-	private ArrayList<HistorySeason> historicalSeasons;
+	private List<HistorySeason> historySeasons = new ArrayList<HistorySeason>();
 	
-
-	public ArrayList<HistorySeason> getHistoricalSeasons() {
-		return historicalSeasons;
-	}
-
-	public void setHistoricalSeasons(ArrayList<HistorySeason> historicalSeasons) {
-		this.historicalSeasons = historicalSeasons;
-	}
+	private List<Performance> performances = new ArrayList<Performance>();;
 
 	public String getId() {
 		return id;
@@ -48,21 +41,54 @@ public class Player {
 		this.fantasyId = fantasyId;
 	}
 
-	public String getFirstName() {
-		return firstName;
+	public PlayerProfile getPlayerProfile() {
+		return playerProfile;
 	}
 
-	public void setFirstName(String firstName) {
-		this.firstName = firstName;
+	public void setPlayerProfile(PlayerProfile playerProfile) {
+		this.playerProfile = playerProfile;
 	}
 
-	public String getLastName() {
-		return lastName;
+	public List<HistorySeason> getHistorySeasons() {
+		return historySeasons;
 	}
 
-	public void setLastName(String lastName) {
-		this.lastName = lastName;
+	public void setHistorySeasons(List<HistorySeason> historySeasons) {
+		this.historySeasons = historySeasons;
 	}
+
+	public List<Performance> getPerformances() {
+		return performances;
+	}
+
+	public void setPerformances(List<Performance> performances) {
+		this.performances = performances;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + fantasyId;
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Player other = (Player) obj;
+		if (fantasyId != other.fantasyId)
+			return false;
+		return true;
+	}
+	
+	
+	
 	
 	
 

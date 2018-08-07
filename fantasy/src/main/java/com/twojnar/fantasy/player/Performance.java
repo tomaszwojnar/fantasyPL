@@ -1,5 +1,5 @@
 package com.twojnar.fantasy.player;
 
-public class PerformanceService {
+public class Performance {
 
 }
