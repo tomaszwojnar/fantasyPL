@@ -30,7 +30,7 @@ public class FixtureUpdateDefinition extends TaskDefinition {
 	public void updateFixtures() throws IOException {
 		teamService.updateFromDB();
 		fixtureService.updateFromDB();
-		List<Fixture> fixtures = (List<Fixture>) scrapper.scrap("https://fantasy.premierleague.com/drf/fixtures", fixtureResponse);
+		List<Fixture> fixtures = (List<Fixture>) scrapper.scrapAll("https://fantasy.premierleague.com/drf/fixtures", fixtureResponse);
 		fixtureService.updateFixtures(fixtures);
 		fixtureService.saveFixtures();
 	}

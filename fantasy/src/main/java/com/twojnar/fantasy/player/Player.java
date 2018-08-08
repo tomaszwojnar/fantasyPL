@@ -16,30 +16,12 @@ public class Player {
 	@JsonIgnore
 	private String id;
 	
-	@JsonProperty("id")
-	private int fantasyId;
-	
 	private PlayerProfile playerProfile;
 	
 	private List<HistorySeason> historySeasons = new ArrayList<HistorySeason>();
 	
 	private List<Performance> performances = new ArrayList<Performance>();;
 
-	public String getId() {
-		return id;
-	}
-
-	public void setId(String id) {
-		this.id = id;
-	}
-
-	public int getFantasyId() {
-		return fantasyId;
-	}
-
-	public void setFantasyId(int fantasyId) {
-		this.fantasyId = fantasyId;
-	}
 
 	public PlayerProfile getPlayerProfile() {
 		return playerProfile;
@@ -65,13 +47,7 @@ public class Player {
 		this.performances = performances;
 	}
 
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + fantasyId;
-		return result;
-	}
+
 
 	@Override
 	public boolean equals(Object obj) {
@@ -82,7 +58,7 @@ public class Player {
 		if (getClass() != obj.getClass())
 			return false;
 		Player other = (Player) obj;
-		if (fantasyId != other.fantasyId)
+		if (this.getPlayerProfile().getFantasyId() != other.getPlayerProfile().getFantasyId())
 			return false;
 		return true;
 	}

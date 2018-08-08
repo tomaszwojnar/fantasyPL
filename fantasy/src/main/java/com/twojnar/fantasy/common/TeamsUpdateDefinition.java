@@ -22,7 +22,7 @@ public class TeamsUpdateDefinition extends TaskDefinition {
 	
 	public void updateTeams() throws IOException {
 		FantasyTeamResponse teams = new FantasyTeamResponse();
-		List<Team> teamsList = (List<Team>) scrapper.scrap("https://fantasy.premierleague.com/drf/teams", teams);
+		List<Team> teamsList = (List<Team>) scrapper.scrapAll("https://fantasy.premierleague.com/drf/teams", teams);
 		teamService.updateFromDB();
 		teamService.updateTeams(teamsList);
 		teamService.saveTeams();
