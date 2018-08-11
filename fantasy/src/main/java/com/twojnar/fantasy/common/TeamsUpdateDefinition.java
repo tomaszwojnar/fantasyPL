@@ -27,5 +27,11 @@ public class TeamsUpdateDefinition extends TaskDefinition {
 		teamService.updateTeams(teamsList);
 		teamService.saveTeams();
 	}
+	
+	public void initialLoad() throws IOException {
+		FantasyTeamResponse teams = new FantasyTeamResponse();
+		List<Team> teamsList = (List<Team>) scrapper.scrapAll("https://fantasy.premierleague.com/drf/teams", teams);
+		teamService.initialLoad(teamsList);
+	}
 
 }

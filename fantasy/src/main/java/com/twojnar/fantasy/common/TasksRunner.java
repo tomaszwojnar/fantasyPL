@@ -7,6 +7,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.twojnar.batcher.CSVReaderWithHeaderAutoDetection;
 import com.twojnar.fantasy.fixture.FixtureService;
 import com.twojnar.fantasy.player.PlayerService;
 import com.twojnar.fantasy.team.TeamService;
@@ -33,18 +34,15 @@ public class TasksRunner {
 	@Autowired
 	PlayerService playerService;
 
+	@Autowired
+	CSVReaderWithHeaderAutoDetection CSVReader;
 	
 	public void run(String... args) throws Exception {
-		try {
-			teamService.updateFromDB();
-			fixtureService.updateFromDB();
-			playerService.updateFromDB();
-			playerUpdateDefinition.updateHistorySeasons();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		
+		teamService.updateFromDB();
+		fixtureService.updateFromDB();
+		playerService.updateFromDB();
+		playerUpdateDefinition.updatePerformances();
 		
 	}
-	
 }

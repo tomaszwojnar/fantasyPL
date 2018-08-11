@@ -1,12 +1,19 @@
 package com.twojnar.fantasy.player;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.data.mongodb.core.mapping.Field;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class HistorySeason {
+	
+	@JsonIgnore
+	List<SimplifiedPerformance> historyPerformances = new ArrayList<SimplifiedPerformance>();
 	
 	@JsonProperty("id")
 	private int fantasyId;
@@ -247,6 +254,28 @@ public class HistorySeason {
 	public void setCreativity(float creativity) {
 		this.creativity = creativity;
 	}
+
+	public List<SimplifiedPerformance> getHistoryPerformances() {
+		return historyPerformances;
+	}
+
+	public void setHistoryPerformances(List<SimplifiedPerformance> historyPerformances) {
+		this.historyPerformances = historyPerformances;
+	}
+
+	public int getFantasyId() {
+		return fantasyId;
+	}
+
+	public void setFantasyId(int fantasyId) {
+		this.fantasyId = fantasyId;
+	}
+	
+	public void addHistorySeasonPerformance(SimplifiedPerformance historyPerformance) {
+		this.historyPerformances.add(historyPerformance);
+	}
+	
+	
 	
 	
 	

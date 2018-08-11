@@ -8,6 +8,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.twojnar.fantasy.fixture.Fixture;
 
 @Document(collection = "players")
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -20,7 +21,7 @@ public class Player {
 	
 	private List<HistorySeason> historySeasons = new ArrayList<HistorySeason>();
 	
-	private List<Performance> performances = new ArrayList<Performance>();;
+	private List<FullPerformance> performances = new ArrayList<FullPerformance>();
 
 
 	public PlayerProfile getPlayerProfile() {
@@ -39,15 +40,22 @@ public class Player {
 		this.historySeasons = historySeasons;
 	}
 
-	public List<Performance> getPerformances() {
+	
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
+
+	public List<FullPerformance> getPerformances() {
 		return performances;
 	}
 
-	public void setPerformances(List<Performance> performances) {
+	public void setPerformances(List<FullPerformance> performances) {
 		this.performances = performances;
 	}
-
-
 
 	@Override
 	public boolean equals(Object obj) {

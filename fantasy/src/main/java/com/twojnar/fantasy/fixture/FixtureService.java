@@ -2,11 +2,13 @@ package com.twojnar.fantasy.fixture;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 import org.springframework.stereotype.Service;
 
+import com.twojnar.fantasy.team.Team;
 import com.twojnar.fantasy.team.TeamService;
 
 @EnableMongoRepositories
@@ -68,6 +70,11 @@ public class FixtureService {
 
 	public List<Fixture> getFixtures() {
 		return this.fixtures;
+	}
+	
+	public Fixture getFixtureByFantasyId(int id) {
+		return this.fixtures.stream()
+		.filter(e -> e.getFantasyId() == id).collect(Collectors.toList()).get(0);
 	}
 
 }

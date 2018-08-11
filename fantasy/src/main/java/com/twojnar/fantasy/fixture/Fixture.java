@@ -1,8 +1,11 @@
 package com.twojnar.fantasy.fixture;
 
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -14,9 +17,16 @@ import com.twojnar.fantasy.team.Team;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Fixture {
 	
+	
+	public Fixture(int fantasyId) {
+		super();
+		this.fantasyId = fantasyId;
+	}
+	
 	@JsonIgnore
 	private String id;
 	
+	@Field("fantasyId")
 	@JsonProperty("id")
 	private int fantasyId;
 	
@@ -25,8 +35,6 @@ public class Fixture {
 	
 	@JsonProperty("kickoff_time")
 	private Date kickoffTime;
-	
-	//private FixtureStats stats;
 	
 	@JsonProperty("team_h")
 	private Team homeTeam;
@@ -82,13 +90,6 @@ public class Fixture {
 		this.kickoffTime = kickoffTime;
 	}
 
-	//public FixtureStats getStats() {
-	//	return stats;
-	//}
-
-	//public void setStats(FixtureStats stats) {
-	//	this.stats = stats;
-	//}
 
 	public Team getHomeTeam() {
 		return homeTeam;
@@ -175,5 +176,7 @@ public class Fixture {
 			return false;
 		return true;
 	}
+	
+	
 
 }

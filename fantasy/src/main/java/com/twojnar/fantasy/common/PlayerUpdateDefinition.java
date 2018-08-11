@@ -10,12 +10,15 @@ import org.springframework.stereotype.Component;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.twojnar.fantasy.fixture.FixtureService;
+import com.twojnar.fantasy.player.FullPerformance;
 import com.twojnar.fantasy.player.HistorySeason;
+import com.twojnar.fantasy.player.Performance;
 import com.twojnar.fantasy.player.Player;
 import com.twojnar.fantasy.player.PlayerProfile;
 import com.twojnar.fantasy.player.PlayerService;
 import com.twojnar.fantasy.team.TeamService;
 import com.twojnar.scrapper.FantasyPlayerDetailsResponse;
+import com.twojnar.scrapper.FantasyPlayerPerformancesResponse;
 import com.twojnar.scrapper.FantasyPlayerProfileResponse;
 import com.twojnar.scrapper.ScrapperService;
 
@@ -40,6 +43,9 @@ public class PlayerUpdateDefinition extends TaskDefinition {
 	@Autowired
 	FantasyPlayerDetailsResponse playerDetailsResponse;
 	
+	@Autowired
+	FantasyPlayerPerformancesResponse playerPerformanceResponse;
+	
 	public void initialLoad() throws JsonParseException, JsonMappingException, IOException {
 		List<PlayerProfile> playerProfiles = (List<PlayerProfile>) scrapper.scrapAll("https://fantasy.premierleague.com/drf/elements", playerProfileResponse);
 		playerService.initialLoad(playerProfiles);
@@ -59,8 +65,25 @@ public class PlayerUpdateDefinition extends TaskDefinition {
 			List<HistorySeason> historySeasons = (List<HistorySeason>) scrapper.scrapField(
 				"https://fantasy.premierleague.com/drf/element-summary/" + player.getPlayerProfile().getFantasyId(), "history_past", playerDetailsResponse);
 			playerService.updateHistorySeasons(player.getPlayerProfile().getFantasyId(), historySeasons);
+			playerService.savePlayers();
 		}
-		playerService.savePlayers();
-
+	}
+	
+	public void updatePerformances() throws IOException, JSONException {
+		for (Player player : playerService.getPlayers()) {
+			List<FullPerformance> performances = (List<FullPerformance>) scrapper.scrapField(
+				"https://fantasy.premierleague.com/drf/element-summary/" + player.getPlayerProfile().getFantasyId(), "history", playerPerformanceResponse);
+			playerService.updatePerformances(player.getPlayerProfile().getFantasyId(), performances);
+			player.getPerformances().stream().forEach(x -> {
+				playerService.completePerformanceData(x);
+			});
+			playerService.savePlayer(player);
+			System.out.println(player.getPlayerProfile().getLastName());
+			System.out.println(player.getPerformances().size());
+		}
+	}
+	
+	public List<PlayerProfile> getProfiles() throws IOException {
+		return (List<PlayerProfile>) scrapper.scrapAll("https://fantasy.premierleague.com/drf/elements", playerProfileResponse);
 	}
 }

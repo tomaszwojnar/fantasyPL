@@ -17,6 +17,7 @@ import com.twojnar.fantasy.team.TeamService;
 @ComponentScan("com.twojnar.fantasy.team")
 @ComponentScan("com.twojnar.fantasy.squad")
 @ComponentScan("com.twojnar.scrapper")
+@ComponentScan("com.twojnar.batcher")
 
 public class FantasyApplication implements CommandLineRunner {
 	

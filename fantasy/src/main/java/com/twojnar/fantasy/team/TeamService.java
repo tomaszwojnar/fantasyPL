@@ -2,6 +2,7 @@ package com.twojnar.fantasy.team;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -60,6 +61,16 @@ public class TeamService {
 	public Team getTeamByFantasyId(int id) {
 		return this.teams.stream()
 		.filter(e -> e.getFantasyId() == id).collect(Collectors.toList()).get(0);
+	}
+	
+	public Team findByName(String n) {
+		try {
+			return this.teams.stream()
+				.filter(e -> e.getName().equalsIgnoreCase(n)).findFirst().get();
+		}
+		catch (NoSuchElementException e) {
+			return null;
+		}
 	}
 	
 	

@@ -1,8 +1,10 @@
 package com.twojnar.scrapper;
 
+import java.nio.charset.Charset;
 import java.util.Map;
 
 import org.springframework.http.HttpMethod;
+import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
 
 
@@ -21,6 +23,7 @@ public class Request {
 		super();
 		this.uri = uri;
 		this.restTemplate = restTemplate;
+		this.restTemplate.getMessageConverters().add(0, new StringHttpMessageConverter(Charset.forName("UTF-8")));
 	}
 
 	public String send() {

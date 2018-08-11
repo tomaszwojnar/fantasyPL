@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 import org.springframework.stereotype.Service;
 
+import com.twojnar.fantasy.fixture.FixtureService;
 import com.twojnar.fantasy.team.Team;
 import com.twojnar.fantasy.team.TeamService;
 
@@ -16,6 +17,9 @@ public class PlayerService {
 	
 	@Autowired
 	private TeamService teamService;
+	
+	@Autowired
+	private FixtureService fixtureService;
 	
 	@Autowired
 	private PlayerRepository playerRepository;
@@ -41,6 +45,10 @@ public class PlayerService {
 		playerRepository.saveAll(this.players);
 	}
 	
+	public void savePlayer(Player player) {
+		playerRepository.save(player);
+	}
+	
 	public void updateProfile(PlayerProfile profile) {
 		this.players.stream()
 		.filter(e -> e.getPlayerProfile().getFantasyId() == profile.getFantasyId()).findFirst().ifPresent(x -> {
@@ -55,6 +63,13 @@ public class PlayerService {
 			x.setHistorySeasons(historySeasons);
 		});
 	}
+	
+	public void updatePerformances(int fantasyId, List<FullPerformance> performances) {
+		this.players.stream()
+		.filter(e -> e.getPlayerProfile().getFantasyId() == fantasyId).findFirst().ifPresent(x -> {
+			x.setPerformances(performances);
+		});
+	}
 
 	public List<Player> getPlayers() {
 		return players;
@@ -64,6 +79,18 @@ public class PlayerService {
 		this.players = players;
 	}
 	
+	public void completeTeam(FullPerformance fullPerformance) {
+		fullPerformance.setOpponentTeam(teamService.getTeamByFantasyId(fullPerformance.getOpponentTeam().getFantasyId()));
+	}
+	
+	public void completeFixture(FullPerformance fullPerformance) {
+		fullPerformance.setFixture(fixtureService.getFixtureByFantasyId(fullPerformance.getFixture().getFantasyId()));
+	}
+	
+	public void completePerformanceData(FullPerformance fullPerformance) {
+		fullPerformance.setOpponentTeam(teamService.getTeamByFantasyId(fullPerformance.getOpponentTeam().getFantasyId()));
+		fullPerformance.setFixture(fixtureService.getFixtureByFantasyId(fullPerformance.getFixture().getFantasyId()));
+	}
 	
 }
 
