@@ -33,16 +33,16 @@ public class TasksRunner {
 	
 	@Autowired
 	PlayerService playerService;
+	
+	@Autowired
+	FantasyStatus fantasyStatus;
 
 	@Autowired
 	CSVReaderWithHeaderAutoDetection CSVReader;
 	
 	public void run(String... args) throws Exception {
 		
-		teamService.updateFromDB();
-		fixtureService.updateFromDB();
-		playerService.updateFromDB();
-		playerUpdateDefinition.updatePerformances();
-		
+		fantasyStatus.updateStatus();
+	
 	}
 }
