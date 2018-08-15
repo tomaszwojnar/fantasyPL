@@ -1,9 +1,15 @@
 package com.twojnar.fantasy.player;
 
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.twojnar.fantasy.player.predictions.AbstractPredictionMethod;
+import com.twojnar.fantasy.player.predictions.Prediction;
 import com.twojnar.fantasy.team.TeamService;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -11,6 +17,8 @@ public abstract class Performance {
 	
 	@Autowired
 	TeamService teamService;
+	
+	List<Prediction> predictions = new ArrayList<Prediction>();
 	
 	private String season;
 
@@ -542,5 +550,40 @@ public abstract class Performance {
 	public void setSeason(String season) {
 		this.season = season;
 	}
+
+	public List<Prediction> getPredictions() {
+		return predictions;
+	}
+
+	public void setPredictions(List<Prediction> predictions) {
+		this.predictions = predictions;
+	}
+
+	public int getTransfersBalance() {
+		return transfersBalance;
+	}
+
+	public void setTransfersBalance(int transfersBalance) {
+		this.transfersBalance = transfersBalance;
+	}
+	
+	public void addPrediction(Prediction prediction) {
+		this.predictions.add(prediction);
+	}
+	
+	public Prediction getLatestPredictionByMethod(AbstractPredictionMethod method) {
+		if (this.predictions.size() == 0) return null;
+		else {
+			return this.predictions.stream().filter(x -> x.getPredictionMethod().getClass().equals(method.getClass())).max(Comparator.comparing(Prediction::getDatePredicitionMade, Comparator.nullsLast(Comparator.reverseOrder()))).get();
+		}
+	}
+	
+	public Prediction getLatestPrediction() {
+		if (this.predictions.size() == 0) return null;
+		else {
+			return this.predictions.stream().max(Comparator.comparing(Prediction::getDatePredicitionMade, Comparator.nullsLast(Comparator.reverseOrder()))).get();
+		}
+	}
+	
 
 }

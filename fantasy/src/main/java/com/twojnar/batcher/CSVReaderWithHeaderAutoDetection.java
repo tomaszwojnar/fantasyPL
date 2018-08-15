@@ -71,7 +71,6 @@ public class CSVReaderWithHeaderAutoDetection {
                     .withIgnoreHeaderCase()
                     .withTrim());
         ) {
-        	int ticker = 0;
             for (CSVRecord csvRecord : csvParser) {
                 // Accessing values by Header names
                 String firstName = csvRecord.get("first_name");
@@ -80,6 +79,7 @@ public class CSVReaderWithHeaderAutoDetection {
 				try {
 					player.get().
 					getHistorySeasons().stream().filter(z -> z.getSeasonName().equalsIgnoreCase("2017/18")).findFirst().ifPresent(q -> {
+						q.setTeam(csvRecord.get("team name"));
     				for (int x = 1; x <39; x++) {
     					String gw = "GW " + x+ ": ";
         				SimplifiedPerformance gameweek = new SimplifiedPerformance();
@@ -147,10 +147,8 @@ public class CSVReaderWithHeaderAutoDetection {
 			catch (NoSuchElementException ex) {
 				     continue;
 			}
-			System.out.println(lastName + "done");
             }
 			playerService.savePlayers();
-			System.out.println("Saving Done");
         }
     }
             

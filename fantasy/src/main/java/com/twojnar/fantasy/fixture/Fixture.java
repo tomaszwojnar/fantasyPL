@@ -10,6 +10,7 @@ import org.springframework.data.mongodb.core.mapping.Field;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.twojnar.fantasy.player.Player;
 import com.twojnar.fantasy.team.Team;
 
 
@@ -17,6 +18,10 @@ import com.twojnar.fantasy.team.Team;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Fixture {
 	
+	
+	public Fixture() {
+		super();
+	}
 	
 	public Fixture(int fantasyId) {
 		super();
@@ -29,6 +34,16 @@ public class Fixture {
 	@Field("fantasyId")
 	@JsonProperty("id")
 	private int fantasyId;
+	
+	@JsonProperty("event")
+	private int event;
+	
+	 /**
+     * Brzydki hack - należy zmienić na klasę
+     */
+	
+	@JsonProperty("stats")
+	private List<Map<String, Map<String, List<Map<String, Object>>>>> stats;
 	
 	@JsonProperty("deadline_time")
 	private Date deadlineTime;
@@ -176,6 +191,28 @@ public class Fixture {
 			return false;
 		return true;
 	}
+
+	public int getEvent() {
+		return event;
+	}
+
+	public void setEvent(int event) {
+		this.event = event;
+	}
+
+	public List<Map<String, Map<String, List<Map<String, Object>>>>> getStats() {
+		return stats;
+	}
+
+	public void setStats(List<Map<String, Map<String, List<Map<String, Object>>>>> stats) {
+		this.stats = stats;
+	}
+	
+	public int getOverallHomeTeamAdvantage() {
+		return this.getHomeTeam().getStrength_overall_home() - this.getAwayTeam().getStrength_overall_home();
+	}
+	
+	
 	
 	
 

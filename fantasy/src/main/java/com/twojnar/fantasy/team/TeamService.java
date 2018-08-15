@@ -64,13 +64,9 @@ public class TeamService {
 	}
 	
 	public Team findByName(String n) {
-		try {
 			return this.teams.stream()
 				.filter(e -> e.getName().equalsIgnoreCase(n)).findFirst().get();
-		}
-		catch (NoSuchElementException e) {
-			return null;
-		}
+
 	}
 	
 	
@@ -78,6 +74,5 @@ public class TeamService {
 	public List<Team> getTeams() {
 		return teams;
 	}
-	
 	
 }

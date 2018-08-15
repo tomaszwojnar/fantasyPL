@@ -1,13 +1,18 @@
 package com.twojnar.fantasy.fixture;
 
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 import org.springframework.stereotype.Service;
+import org.springframework.util.comparator.Comparators;
 
+import com.twojnar.fantasy.common.FantasyStatus;
+import com.twojnar.fantasy.player.Player;
 import com.twojnar.fantasy.team.Team;
 import com.twojnar.fantasy.team.TeamService;
 
@@ -20,6 +25,9 @@ public class FixtureService {
 	
 	@Autowired
 	private TeamService teamService;
+	
+	@Autowired
+	private FantasyStatus fantasyStatus;
 	
 	
 	private List<Fixture> fixtures = new ArrayList<Fixture>();
@@ -76,5 +84,38 @@ public class FixtureService {
 		return this.fixtures.stream()
 		.filter(e -> e.getFantasyId() == id).collect(Collectors.toList()).get(0);
 	}
+	
+	/**
+	 * Returns unsorted list of Fixtures for the team.
+	 * 
+	 * @param team
+	 * @return
+	 */
+	
+	public List<Fixture> getFixturesForTeam(Team team) {
+		return this.fixtures.stream()
+		.filter(e ->
+			e.getAwayTeam().getFantasyId() == team.getFantasyId()
+			|| e.getHomeTeam().getFantasyId() == team.getFantasyId()).collect(Collectors.toList());
+	}
+	
+	public List<Fixture> getNextFixturesForTeam(Team team, int number) {
+		
+		List<Fixture> list = this.getFixturesForTeam(team).stream()
+									 .filter(x ->x.getDeadlineTime().after(new Date()))
+									 .sorted(Comparator.comparingInt(Fixture::getEvent))
+									 .limit(number)
+									 .collect(Collectors.toList());
+		return list;
+
+	}
+	
+	public Boolean isPlayerInTeams(Player player, Fixture fixture) {
+		
+		return player.getPlayerProfile().getTeam().equals(fixture.getAwayTeam()) || player.getPlayerProfile().getTeam().equals(fixture.getHomeTeam());
+		
+	}
+	
+	
 
 }

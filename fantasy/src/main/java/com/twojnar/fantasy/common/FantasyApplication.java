@@ -8,6 +8,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import org.springframework.context.annotation.ComponentScan;
 
+import com.twojnar.fantasy.fixture.FixtureService;
+import com.twojnar.fantasy.player.PlayerService;
 import com.twojnar.fantasy.team.TeamService;
 
 
@@ -21,12 +23,9 @@ import com.twojnar.fantasy.team.TeamService;
 
 public class FantasyApplication implements CommandLineRunner {
 	
-	@Autowired
-	TasksRunner taskRunner;
-	
-	@Autowired
-	TeamService teamService;
 
+	@Autowired
+	ApplicationInit applicationInit;
 
 	public static void main(String[] args) {
 		
@@ -34,6 +33,6 @@ public class FantasyApplication implements CommandLineRunner {
 	}
 
     public void run(String... args) throws Exception {
-    	taskRunner.run();
+    	applicationInit.run();
     }
 }

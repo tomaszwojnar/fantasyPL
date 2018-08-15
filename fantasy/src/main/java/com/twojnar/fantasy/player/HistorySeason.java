@@ -18,6 +18,9 @@ public class HistorySeason {
 	@JsonProperty("id")
 	private int fantasyId;
 	
+	@JsonIgnore
+	private String team;
+	
 	@JsonProperty("season_name")
 	private String seasonName;
 	
@@ -274,6 +277,16 @@ public class HistorySeason {
 	public void addHistorySeasonPerformance(SimplifiedPerformance historyPerformance) {
 		this.historyPerformances.add(historyPerformance);
 	}
+
+	public String getTeam() {
+		return team;
+	}
+
+	public void setTeam(String team) {
+		this.team = team;
+	}
+	
+	
 	
 	
 	

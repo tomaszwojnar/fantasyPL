@@ -1,15 +1,18 @@
 package com.twojnar.fantasy.common;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
+import java.util.NoSuchElementException;
+
+import org.apache.commons.math3.stat.regression.SimpleRegression;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.twojnar.batcher.CSVReaderWithHeaderAutoDetection;
 import com.twojnar.fantasy.fixture.FixtureService;
+import com.twojnar.fantasy.player.HistorySeason;
+import com.twojnar.fantasy.player.Player;
 import com.twojnar.fantasy.player.PlayerService;
+import com.twojnar.fantasy.team.Team;
 import com.twojnar.fantasy.team.TeamService;
 
 
@@ -42,7 +45,8 @@ public class TasksRunner {
 	
 	public void run(String... args) throws Exception {
 		
-		fantasyStatus.updateStatus();
+		
 	
-	}
-}
+	}}
+
+
