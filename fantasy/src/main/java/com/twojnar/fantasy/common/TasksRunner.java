@@ -45,7 +45,15 @@ public class TasksRunner {
 	
 	public void run(String... args) throws Exception {
 		
-		
+		//teamUpdateDefinition.initialLoad();
+		//teamUpdateDefinition.updateTeams();
+		//fixtureUpdateDefinition.initialLoad();
+		//CSVReader.processTeamsCSV("D:/IT Projects/fantasy/teams.csv");
+		//teamService.saveTeams();
+		//playerUpdateDefinition.initialLoad();
+		//playerUpdateDefinition.updateHistorySeasons();
+		//playerUpdateDefinition.updatePerformances();
+		System.out.println("Done");
 	
 	}}
 

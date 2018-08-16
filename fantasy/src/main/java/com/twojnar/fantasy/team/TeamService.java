@@ -2,13 +2,9 @@ package com.twojnar.fantasy.team;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Optional;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 import org.springframework.stereotype.Service;
 
@@ -43,6 +39,7 @@ public class TeamService {
 			this.teams.stream()
 				.filter(e -> e.equals(updatedTeam)).findFirst().ifPresent(x -> {
 					updatedTeam.setId(x.getId());
+					updatedTeam.setFantasyId2017(x.getFantasyId2017());
 					this.teams.remove(x);
 					this.teams.add(updatedTeam);
 				});;
@@ -52,25 +49,28 @@ public class TeamService {
 	
 	public void initialLoad(List<Team> teams) {
 		teamRepository.deleteAll();
+		this.teams.clear();
 		for (Team updatedTeam : teams) {
 				this.teams.add(updatedTeam);
 		};
 		this.saveTeams();
 	}
 	
-	public Team getTeamByFantasyId(int id) {
+	public Team getTeamByFantasyId2018(int id) {
 		return this.teams.stream()
-		.filter(e -> e.getFantasyId() == id).collect(Collectors.toList()).get(0);
+		.filter(e -> e.getFantasyId2018() == id).collect(Collectors.toList()).get(0);
+	}
+	
+	public Team getTeamByCode(int code) {
+		return this.getTeams().stream()
+		.filter(e -> e.getCode() == code).collect(Collectors.toList()).get(0);
 	}
 	
 	public Team findByName(String n) {
 			return this.teams.stream()
 				.filter(e -> e.getName().equalsIgnoreCase(n)).findFirst().get();
-
 	}
 	
-	
-
 	public List<Team> getTeams() {
 		return teams;
 	}

@@ -18,7 +18,6 @@ import java.io.Reader;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -34,6 +33,61 @@ public class CSVReaderWithHeaderAutoDetection {
 	
 	@Autowired
 	FixtureService fixtureService;
+	
+	
+	public void processTeamsCSV(String filePath) {
+		
+		teamService.updateFromDB();
+		fixtureService.updateFromDB();
+		playerService.updateFromDB();
+    	
+        try (
+            Reader reader = Files.newBufferedReader(Paths.get(filePath));
+            CSVParser csvParser = new CSVParser(reader, CSVFormat.DEFAULT
+                    .withFirstRecordAsHeader()
+                    .withIgnoreHeaderCase()
+                    .withTrim());
+        ) 
+        {
+        	for (CSVRecord csvRecord : csvParser) {
+	        	int code = Integer.parseInt(csvRecord.get("code"));
+
+				try {
+					Team team = teamService.getTeams().stream().filter(x -> x.getCode() == code).findFirst().get();
+					team.setFantasyId2017(Integer.parseInt(csvRecord.get("id")));
+					}
+	
+	        	catch (NoSuchElementException ex) 
+					{
+					Team newTeam = new Team();
+					newTeam.setFantasyId2017(Integer.parseInt(csvRecord.get("id")));
+					newTeam.setName(csvRecord.get("name"));
+					newTeam.setCode(Integer.parseInt(csvRecord.get("code")));
+					newTeam.setShort_name(csvRecord.get("short_name"));
+					newTeam.setUnavailable(true);
+					newTeam.setStrength(Integer.parseInt(csvRecord.get("strength")));
+					newTeam.setPosition(Integer.parseInt(csvRecord.get("position")));
+					newTeam.setPlayed(Integer.parseInt(csvRecord.get("played")));
+					newTeam.setWin(Integer.parseInt(csvRecord.get("win")));
+					newTeam.setLoss(Integer.parseInt(csvRecord.get("loss")));
+					newTeam.setDraw(Integer.parseInt(csvRecord.get("draw")));
+					newTeam.setPoints(Integer.parseInt(csvRecord.get("points")));
+					newTeam.setLink_url(csvRecord.get("link_url"));
+					newTeam.setStrength_overall_home(Integer.parseInt(csvRecord.get("strength_overall_home")));
+					newTeam.setStrength_overall_away(Integer.parseInt(csvRecord.get("strength_overall_away")));
+					newTeam.setStrength_attack_home(Integer.parseInt(csvRecord.get("strength_attack_home")));
+					newTeam.setStrength_defence_home(Integer.parseInt(csvRecord.get("strength_defence_home")));
+					newTeam.setStrength_attack_away(Integer.parseInt(csvRecord.get("strength_attack_away")));
+					newTeam.setStrength_defence_away(Integer.parseInt(csvRecord.get("strength_defence_away")));
+					teamService.addTeam(newTeam);
+		        	}
+        	}
+        } catch (IOException e) {
+        	System.out.println("File not found.");
+		}
+	}
+	
+	
 
     public void process(String filePath) throws IOException {
 		teamService.updateFromDB();
@@ -73,7 +127,6 @@ public class CSVReaderWithHeaderAutoDetection {
         ) {
             for (CSVRecord csvRecord : csvParser) {
                 // Accessing values by Header names
-                String firstName = csvRecord.get("first_name");
                 String lastName = csvRecord.get("second_name");
 				Optional <Player> player = playerService.getPlayers().stream().filter(x -> x.getPlayerProfile().getLastName().equalsIgnoreCase(lastName)).findFirst();
 				try {

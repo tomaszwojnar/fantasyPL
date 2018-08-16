@@ -63,12 +63,15 @@ public class FixtureService {
 	}
 	
 	public void completeTeamInfo(Fixture fixture) {
-		fixture.setAwayTeam(teamService.getTeamByFantasyId(fixture.getAwayTeam().getFantasyId()));
-		fixture.setHomeTeam(teamService.getTeamByFantasyId(fixture.getHomeTeam().getFantasyId()));
+		
+		fixture.setAwayTeam(teamService.getTeamByFantasyId2018(fixture.getAwayTeam().getFantasyId2018()));
+		fixture.setHomeTeam(teamService.getTeamByFantasyId2018(fixture.getHomeTeam().getFantasyId2018()));
 		
 	}
 	
 	public void initialLoad(List<Fixture> fixtures) {
+		fixtureRepository.deleteAll();
+		this.fixtures.clear();
 		fixtureRepository.deleteAll();
 		for (Fixture updatedFixture : fixtures) {
 				this.fixtures.add(updatedFixture);
@@ -95,8 +98,8 @@ public class FixtureService {
 	public List<Fixture> getFixturesForTeam(Team team) {
 		return this.fixtures.stream()
 		.filter(e ->
-			e.getAwayTeam().getFantasyId() == team.getFantasyId()
-			|| e.getHomeTeam().getFantasyId() == team.getFantasyId()).collect(Collectors.toList());
+			e.getAwayTeam().getFantasyId2018() == team.getFantasyId2018()
+			|| e.getHomeTeam().getFantasyId2018() == team.getFantasyId2018()).collect(Collectors.toList());
 	}
 	
 	public List<Fixture> getNextFixturesForTeam(Team team, int number) {

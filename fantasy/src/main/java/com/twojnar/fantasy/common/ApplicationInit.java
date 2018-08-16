@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.twojnar.fantasy.fixture.FixtureService;
-import com.twojnar.fantasy.player.Player;
 import com.twojnar.fantasy.player.PlayerService;
 import com.twojnar.fantasy.team.TeamService;
 
@@ -25,14 +24,13 @@ public class ApplicationInit {
 	
 
 	public void run() throws Exception {
-    	teamService.updateFromDB();
+    	
+		teamService.updateFromDB();
     	fixtureService.updateFromDB();
     	playerService.updateFromDB();
     	
-    	Player player = playerService.getPlayers().stream().filter(x -> x.getPlayerProfile().getLastName().equals("Salah")).findFirst().get();
+    	taskRunner.run();
     	
-    	
-    	playerService.updatePredictions(player, 10);
 
 	}
 

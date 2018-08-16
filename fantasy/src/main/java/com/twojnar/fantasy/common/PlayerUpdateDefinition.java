@@ -63,8 +63,8 @@ public class PlayerUpdateDefinition extends TaskDefinition {
 	public void updateHistorySeasons() throws IOException, JSONException {
 		for (Player player : playerService.getPlayers()) {
 			List<HistorySeason> historySeasons = (List<HistorySeason>) scrapper.scrapField(
-				"https://fantasy.premierleague.com/drf/element-summary/" + player.getPlayerProfile().getFantasyId(), "history_past", playerDetailsResponse);
-			playerService.updateHistorySeasons(player.getPlayerProfile().getFantasyId(), historySeasons);
+				"https://fantasy.premierleague.com/drf/element-summary/" + player.getPlayerProfile().getFantasyId2018(), "history_past", playerDetailsResponse);
+			playerService.updateHistorySeasons(player.getPlayerProfile().getCode(), historySeasons);
 			playerService.savePlayers();
 		}
 	}
@@ -72,14 +72,12 @@ public class PlayerUpdateDefinition extends TaskDefinition {
 	public void updatePerformances() throws IOException, JSONException {
 		for (Player player : playerService.getPlayers()) {
 			List<FullPerformance> performances = (List<FullPerformance>) scrapper.scrapField(
-				"https://fantasy.premierleague.com/drf/element-summary/" + player.getPlayerProfile().getFantasyId(), "history", playerPerformanceResponse);
-			playerService.updatePerformances(player.getPlayerProfile().getFantasyId(), performances);
+				"https://fantasy.premierleague.com/drf/element-summary/" + player.getPlayerProfile().getFantasyId2018(), "history", playerPerformanceResponse);
+			playerService.updatePerformances(player.getPlayerProfile().getCode(), performances);
 			player.getPerformances().stream().forEach(x -> {
 				playerService.completePerformanceData(x);
 			});
 			playerService.savePlayer(player);
-			System.out.println(player.getPlayerProfile().getLastName());
-			System.out.println(player.getPerformances().size());
 		}
 	}
 	

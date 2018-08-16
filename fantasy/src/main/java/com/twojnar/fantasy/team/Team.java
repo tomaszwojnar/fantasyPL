@@ -1,11 +1,8 @@
 package com.twojnar.fantasy.team;
 
 import java.io.Serializable;
-import java.util.Date;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.data.mongodb.core.mapping.Field;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -18,12 +15,18 @@ public class Team implements Serializable {
 	private String id;
 	
 	@JsonProperty("id")
-	private int fantasyId;
+	private int fantasyId2018;
+	
+	@JsonIgnore
+	private int fantasyId2017;
+	
 	private String name;
-	private String code;
+	
+	@JsonProperty("code")
+	private int code;
 	private String short_name;
 	private Boolean unavailable;
-	private int stength;
+	private int strength;
 	private int position;
 	private int played;
 	private int win;
@@ -44,13 +47,11 @@ public class Team implements Serializable {
     	super();
     }
     
-    public Team (int identifier) {
+    public Team (int id) {
     	super();
-    	this.fantasyId = identifier;
+    	this.fantasyId2018 = id;
     }
     
-    
-	
     @JsonIgnore
     public String getId() {
 		return id;
@@ -60,16 +61,17 @@ public class Team implements Serializable {
 	public void setId(String id) {
 		this.id = id;
 	}
+    
 	public String getName() {
 		return name;
 	}
 	public void setName(String name) {
 		this.name = name;
 	}
-	public String getCode() {
+	public int getCode() {
 		return code;
 	}
-	public void setCode(String code) {
+	public void setCode(int code) {
 		this.code = code;
 	}
 
@@ -85,11 +87,11 @@ public class Team implements Serializable {
 	public void setUnavailable(Boolean unavailable) {
 		this.unavailable = unavailable;
 	}
-	public int getStength() {
-		return stength;
+	public int getStrength() {
+		return strength;
 	}
-	public void setStength(int stength) {
-		this.stength = stength;
+	public void setStrength(int stength) {
+		this.strength = stength;
 	}
 	public int getPosition() {
 		return position;
@@ -176,12 +178,20 @@ public class Team implements Serializable {
 		this.strength_defence_away = strength_defence_away;
 	}
 	
-	public int getFantasyId() {
-		return this.fantasyId;
+	public int getFantasyId2018() {
+		return this.fantasyId2018;
 	}
-	public void setFantasyId(int fantasyId) {
-		this.fantasyId = fantasyId;
+	public void setFantasyId2018(int fantasyId2018) {
+		this.fantasyId2018 = fantasyId2018;
 	}
+	
+	public int getFantasyId2017() {
+		return this.fantasyId2017;
+	}
+	public void setFantasyId2017(int fantasyId2017) {
+		this.fantasyId2017 = fantasyId2017;
+	}
+	
 	@Override
 	public String toString() {
 		return "Team [name=" + name + "]";
@@ -191,7 +201,7 @@ public class Team implements Serializable {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + fantasyId;
+		result = prime * result + fantasyId2018;
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
 		return result;
 	}
@@ -205,7 +215,7 @@ public class Team implements Serializable {
 		if (getClass() != obj.getClass())
 			return false;
 		Team other = (Team) obj;
-		if (fantasyId != other.fantasyId)
+		if (code != other.code)
 			return false;
 		if (name == null) {
 			if (other.name != null)

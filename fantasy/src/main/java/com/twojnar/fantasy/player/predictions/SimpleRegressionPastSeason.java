@@ -57,7 +57,6 @@ public class SimpleRegressionPastSeason extends AbstractPredictionMethod {
 			
 			int teamDifferential = player.getPlayerProfile().getTeam().equals(fixture.getHomeTeam()) ? fixture.getOverallHomeTeamAdvantage() : -fixture.getOverallHomeTeamAdvantage();
 			
-			System.out.println(teamDifferential);
 			
 			return simpleRegression.predict(teamDifferential);
 	}

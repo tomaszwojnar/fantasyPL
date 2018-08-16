@@ -42,7 +42,7 @@ public class PlayerService {
 		for (PlayerProfile newProfile : playerProfiles) {
 				Player newPlayer = new Player();
 				newPlayer.setPlayerProfile(newProfile);
-				newPlayer.getPlayerProfile().setTeam(teamService.getTeamByFantasyId(newPlayer.getPlayerProfile().getTeam().getFantasyId()));
+				newPlayer.getPlayerProfile().setTeam(teamService.getTeamByFantasyId2018(newPlayer.getPlayerProfile().getTeam().getFantasyId2018()));
 				this.players.add(newPlayer);
 		};
 		this.savePlayers();
@@ -59,22 +59,22 @@ public class PlayerService {
 	
 	public void updateProfile(PlayerProfile profile) {
 		this.players.stream()
-		.filter(e -> e.getPlayerProfile().getFantasyId() == profile.getFantasyId()).findFirst().ifPresent(x -> {
+		.filter(e -> e.getPlayerProfile().getCode() == profile.getCode()).findFirst().ifPresent(x -> {
 			x.setPlayerProfile(profile);
-			x.getPlayerProfile().setTeam(teamService.getTeamByFantasyId(x.getPlayerProfile().getTeam().getFantasyId()));
+			x.getPlayerProfile().setTeam(teamService.getTeamByFantasyId2018(x.getPlayerProfile().getTeam().getFantasyId2018()));
 		});
 	}
 	
-	public void updateHistorySeasons(int fantasyId, List<HistorySeason> historySeasons) {
+	public void updateHistorySeasons(int code, List<HistorySeason> historySeasons) {
 		this.players.stream()
-		.filter(e -> e.getPlayerProfile().getFantasyId() == fantasyId).findFirst().ifPresent(x -> {
+		.filter(e -> e.getPlayerProfile().getCode() == code).findFirst().ifPresent(x -> {
 			x.setHistorySeasons(historySeasons);
 		});
 	}
 	
-	public void updatePerformances(int fantasyId, List<FullPerformance> performances) {
+	public void updatePerformances(int code, List<FullPerformance> performances) {
 		this.players.stream()
-		.filter(e -> e.getPlayerProfile().getFantasyId() == fantasyId).findFirst().ifPresent(x -> {
+		.filter(e -> e.getPlayerProfile().getCode() == code).findFirst().ifPresent(x -> {
 			x.setPerformances(performances);
 		});
 	}
@@ -88,7 +88,7 @@ public class PlayerService {
 	}
 	
 	public void completeTeam(FullPerformance fullPerformance) {
-		fullPerformance.setOpponentTeam(teamService.getTeamByFantasyId(fullPerformance.getOpponentTeam().getFantasyId()));
+		fullPerformance.setOpponentTeam(teamService.getTeamByFantasyId2018(fullPerformance.getOpponentTeam().getFantasyId2018()));
 	}
 	
 	public void completeFixture(FullPerformance fullPerformance) {
@@ -96,7 +96,7 @@ public class PlayerService {
 	}
 	
 	public void completePerformanceData(FullPerformance fullPerformance) {
-		fullPerformance.setOpponentTeam(teamService.getTeamByFantasyId(fullPerformance.getOpponentTeam().getFantasyId()));
+		fullPerformance.setOpponentTeam(teamService.getTeamByFantasyId2018(fullPerformance.getOpponentTeam().getFantasyId2018()));
 		fullPerformance.setFixture(fixtureService.getFixtureByFantasyId(fullPerformance.getFixture().getFantasyId()));
 	}
 	

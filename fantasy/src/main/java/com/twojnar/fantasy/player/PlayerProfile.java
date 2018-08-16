@@ -13,7 +13,10 @@ import com.twojnar.fantasy.team.Team;
 public class PlayerProfile {
 	
 	@JsonProperty("id")
-	private int fantasyId;
+	private int fantasyId2018;
+	
+	@JsonIgnore
+	private int fantasyId2017;
 	
 	@JsonProperty("first_name")
 	private String firstName;
@@ -25,6 +28,8 @@ public class PlayerProfile {
 	
 	@JsonProperty("team")
 	private Team team;
+	
+	private int code;
 	
 	@JsonProperty("now_cost")
 	private int	nowCost;
@@ -167,12 +172,20 @@ public class PlayerProfile {
 	@JsonProperty("element_type")
 	private int position;
 
-	public int getFantasyId() {
-		return fantasyId;
+	public int getFantasyId2018() {
+		return fantasyId2018;
 	}
 
-	public void setFantasyId(int fantasyId) {
-		this.fantasyId = fantasyId;
+	public void setFantasyId2018(int fantasyId2018) {
+		this.fantasyId2018 = fantasyId2018;
+	}
+	
+	public int getFantasyId2017() {
+		return fantasyId2017;
+	}
+
+	public void setFantasyId2017(int fantasyId2017) {
+		this.fantasyId2017 = fantasyId2017;
 	}
 
 	public String getFirstName() {
@@ -582,6 +595,16 @@ public class PlayerProfile {
 	public void setPosition(int position) {
 		this.position = position;
 	}
+
+	public int getCode() {
+		return code;
+	}
+
+	public void setCode(int code) {
+		this.code = code;
+	}
+	
+	
 	
 	
 
