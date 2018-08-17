@@ -52,7 +52,8 @@ public class TasksRunner {
 		//CSVReader.processTeamsCSV("D:/IT Projects/fantasy/teams.csv");
 		//CSVReader.processFixturesCSV("D:/IT Projects/fantasy/fixtures.csv");
 		//CSVReader.processPlayerProfileCSV("D:/IT Projects/fantasy/players.csv");
-		playerUpdateDefinition.updateProfiles();
+		CSVReader.processHistoryPerfomarnces("D:/IT Projects/fantasy/player_match_details.csv");
+		//playerUpdateDefinition.updateProfiles();
 		//teamService.saveTeams();
 		//playerUpdateDefinition.updatePerformances();
 		System.out.println("Done");

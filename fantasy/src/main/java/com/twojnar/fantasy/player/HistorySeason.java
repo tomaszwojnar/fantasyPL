@@ -274,7 +274,14 @@ public class HistorySeason {
 		this.fantasyId = fantasyId;
 	}
 	
-	public void addHistorySeasonPerformance(FullPerformance historyPerformance) {
+	public void addOrReplaceHistorySeasonPerformance(FullPerformance historyPerformance) {
+		this.historyPerformances.stream()
+			.filter(x -> x.equals(historyPerformance))
+			.findFirst()
+			.ifPresent(y -> {
+				this.historyPerformances.remove(y);
+			}
+			);
 		this.historyPerformances.add(historyPerformance);
 	}
 

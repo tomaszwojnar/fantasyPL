@@ -141,6 +141,24 @@ public class PlayerService {
 		}
 	}
 	
+	public Performance getPastPerformanceByPlayerRoundAndSeason(Player player, int round, String season) {
+		
+		return this.getPlayers().stream()
+								  .filter(x -> x.equals(player))
+								  .findFirst()
+								  .get()
+								  .getHistorySeasons()
+								  .stream()
+								  .filter(y -> y.getSeasonName().equals(season))
+								  .findFirst()
+								  .get()
+								  .getHistoryPerformances()
+								  .stream()
+								  .filter(y -> y.getRound() == round)
+								  .findFirst()
+								  .get();
+		}
+	
 	public Player getPlayerByCode(int code) {
 		return this.getPlayers().stream().filter(x -> x.getPlayerProfile().getCode() == code).findFirst().get();
 	}
