@@ -127,6 +127,7 @@ public class CSVReaderWithHeaderAutoDetection {
 				newFixture.setHomeTeamScore(Integer.parseInt(csvRecord.get("team_h_score")));
 				newFixture.setAwayTeamScore(Integer.parseInt(csvRecord.get("team_a_score")));
 				newFixture.setFinished(new Boolean("1".equals(csvRecord.get("finished"))));
+				System.out.println("new");
 				fixtureService.addFixture(newFixture);
 					
 		  }
