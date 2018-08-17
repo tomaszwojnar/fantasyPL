@@ -169,6 +169,7 @@ public class CSVReaderWithHeaderAutoDetection {
 	
 
     /*public void processHistoryPerfomarnces(String filePath) throws IOException {
+		
 		teamService.updateFromDB();
 		fixtureService.updateFromDB();
 		playerService.updateFromDB();
@@ -183,10 +184,9 @@ public class CSVReaderWithHeaderAutoDetection {
         ) {
             for (CSVRecord csvRecord : csvParser) {
                 // Accessing values by Header names
-                String lastName = csvRecord.get("second_name");
-				Optional <Player> player = playerService.getPlayers().stream().filter(x -> x.getPlayerProfile().getLastName().equalsIgnoreCase(lastName)).findFirst();
 				try {
-					player.get().
+					Player player = playerService.getPlayerByFantasyIdAndSeason(Integer.parseInt(csvRecord.get("element")), "2017/18");
+					playerService.getHistorySeason(player, "2017/18").
 					getHistorySeasons().stream().filter(z -> z.getSeasonName().equalsIgnoreCase("2017/18")).findFirst().ifPresent(q -> {
 						q.setTeam(csvRecord.get("team name"));
     				for (int x = 1; x <39; x++) {

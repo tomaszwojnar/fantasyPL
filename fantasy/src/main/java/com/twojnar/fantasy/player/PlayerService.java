@@ -146,15 +146,14 @@ public class PlayerService {
 	}
 	
 	public Player getPlayerByFantasyIdAndSeason(int id, String season) {
-		
-		switch (season) {
-		case "2018/19" :
-			return this.getPlayers().stream().filter(x -> x.getPlayerProfile().getFantasyId2018() == id).findFirst().get();
-		case "2017/18" :
-			return this.getPlayers().stream().filter(x -> x.getPlayerProfile().getFantasyId2017() == id).findFirst().get();
-		default :
-			return null;
-		}
+			switch (season) {
+			case "2018/19" :
+				return this.getPlayers().stream().filter(x -> x.getPlayerProfile().getFantasyId2018() == id).findFirst().get();
+			case "2017/18" :
+				return this.getPlayers().stream().filter(x -> x.getPlayerProfile().getFantasyId2017() == id).findFirst().get();
+			default :
+				return null;
+			}
 	}
 	
 	public HistorySeason getHistorySeason(Player player, String season) {
