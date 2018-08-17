@@ -26,6 +26,8 @@ public class FantasyStatus {
 	
 	private Boolean dataChecked;
 	
+	private String currentSeason;
+	
 
 	public int getCurrentEvent() {
 		return currentEvent;
@@ -37,6 +39,8 @@ public class FantasyStatus {
 		this.currentDeadLine = new Date(Long.parseLong(response.getJSONArray("events").getJSONObject(this.currentEvent-1).getString("deadline_time_epoch"))*1000);
 		this.finished = Boolean.parseBoolean(response.getJSONArray("events").getJSONObject(this.currentEvent-1).getString("finished"));
 		this.dataChecked = Boolean.parseBoolean(response.getJSONArray("events").getJSONObject(this.currentEvent-1).getString("data_checked"));
+		this.currentSeason = "2018/19";
+		
 	}
 
 	public Date getCurrentDeadline() {
@@ -74,6 +78,16 @@ public class FantasyStatus {
 	public void setCurrentEvent(int currentEvent) {
 		this.currentEvent = currentEvent;
 	}
+
+	public String getCurrentSeason() {
+		return currentSeason;
+	}
+
+	public void setCurrentSeason(String currentSeason) {
+		this.currentSeason = currentSeason;
+	}
+	
+	
 	
 	
 }

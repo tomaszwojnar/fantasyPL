@@ -1,16 +1,10 @@
 package com.twojnar.fantasy.player.predictions;
 
-import java.util.NoSuchElementException;
 
-import org.apache.commons.math3.stat.regression.SimpleRegression;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.twojnar.fantasy.fixture.Fixture;
 import com.twojnar.fantasy.fixture.FixtureService;
-import com.twojnar.fantasy.player.HistorySeason;
-import com.twojnar.fantasy.player.Player;
-import com.twojnar.fantasy.team.Team;
 import com.twojnar.fantasy.team.TeamService;
 
 
@@ -25,7 +19,7 @@ public class SimpleRegressionPastSeason extends AbstractPredictionMethod {
 	FixtureService fixtureService;
 	
 	
-	public double makePrediction(Player player, Fixture fixture) {
+	/*public double makePrediction(Player player, Fixture fixture) {
 		
 		if (!fixtureService.isPlayerInTeams(player, fixture)) throw new NoSuchElementException(player.getPlayerProfile().getLastName() + "does not play in fixture " + fixture.getFantasyId());
 		
@@ -64,7 +58,7 @@ public class SimpleRegressionPastSeason extends AbstractPredictionMethod {
 	public void gatherData(Player player, Fixture fixture) {
 		// TODO Auto-generated method stub
 		
-	}
+	}*/
 
 	
 

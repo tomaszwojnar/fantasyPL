@@ -46,9 +46,18 @@ public class PlayerUpdateDefinition extends TaskDefinition {
 	@Autowired
 	FantasyPlayerPerformancesResponse playerPerformanceResponse;
 	
-	public void initialLoad() throws JsonParseException, JsonMappingException, IOException {
+	@Autowired
+	FantasyStatus fantasyStatus;
+	
+	public void initialLoad() throws JsonParseException, JsonMappingException, IOException, JSONException {
 		List<PlayerProfile> playerProfiles = (List<PlayerProfile>) scrapper.scrapAll("https://fantasy.premierleague.com/drf/elements", playerProfileResponse);
 		playerService.initialLoad(playerProfiles);
+		for (Player player : playerService.getPlayers()) {
+			List<HistorySeason> historySeasons = (List<HistorySeason>) scrapper.scrapField(
+				"https://fantasy.premierleague.com/drf/element-summary/" + player.getPlayerProfile().getFantasyId2018(), "history_past", playerDetailsResponse);
+			playerService.updateHistorySeasons(player.getPlayerProfile().getCode(), historySeasons);
+			playerService.savePlayers();
+		}
 	}
 	
 	public void updateProfiles() throws IOException {
@@ -60,22 +69,13 @@ public class PlayerUpdateDefinition extends TaskDefinition {
 		playerService.savePlayers();
 	}
 	
-	public void updateHistorySeasons() throws IOException, JSONException {
-		for (Player player : playerService.getPlayers()) {
-			List<HistorySeason> historySeasons = (List<HistorySeason>) scrapper.scrapField(
-				"https://fantasy.premierleague.com/drf/element-summary/" + player.getPlayerProfile().getFantasyId2018(), "history_past", playerDetailsResponse);
-			playerService.updateHistorySeasons(player.getPlayerProfile().getCode(), historySeasons);
-			playerService.savePlayers();
-		}
-	}
-	
 	public void updatePerformances() throws IOException, JSONException {
 		for (Player player : playerService.getPlayers()) {
 			List<FullPerformance> performances = (List<FullPerformance>) scrapper.scrapField(
 				"https://fantasy.premierleague.com/drf/element-summary/" + player.getPlayerProfile().getFantasyId2018(), "history", playerPerformanceResponse);
 			playerService.updatePerformances(player.getPlayerProfile().getCode(), performances);
 			player.getPerformances().stream().forEach(x -> {
-				playerService.completePerformanceData(x);
+				playerService.completeFixtureData(x, fantasyStatus.getCurrentSeason());
 			});
 			playerService.savePlayer(player);
 		}

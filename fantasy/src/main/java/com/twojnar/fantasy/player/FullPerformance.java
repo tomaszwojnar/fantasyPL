@@ -2,14 +2,9 @@ package com.twojnar.fantasy.player;
 
 import java.util.Map;
 
-import org.springframework.beans.factory.annotation.Autowired;
-
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.twojnar.fantasy.fixture.Fixture;
-import com.twojnar.fantasy.fixture.FixtureService;
-import com.twojnar.fantasy.team.Team;
-import com.twojnar.fantasy.team.TeamService;
+
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class FullPerformance extends Performance {
@@ -18,9 +13,6 @@ public class FullPerformance extends Performance {
 	
 	private Map<String, String> explain;
 	
-	@JsonProperty("opponent_team")
-	private Team opponentTeam;
-
 	public Fixture getFixture() {
 		return fixture;
 	}
@@ -37,13 +29,6 @@ public class FullPerformance extends Performance {
 		this.explain = explain;
 	}
 
-	public Team getOpponentTeam() {
-		return opponentTeam;
-	}
-
-	public void setOpponentTeam(Team opponentTeam) {
-		this.opponentTeam = opponentTeam;
-	}
 }
 
 

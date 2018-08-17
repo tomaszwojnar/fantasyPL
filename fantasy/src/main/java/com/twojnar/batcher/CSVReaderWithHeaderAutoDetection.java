@@ -6,6 +6,7 @@ import org.apache.commons.csv.CSVRecord;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.twojnar.fantasy.fixture.Fixture;
 import com.twojnar.fantasy.fixture.FixtureService;
 import com.twojnar.fantasy.player.Player;
 import com.twojnar.fantasy.player.PlayerService;
@@ -17,7 +18,13 @@ import java.io.IOException;
 import java.io.Reader;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -88,8 +95,49 @@ public class CSVReaderWithHeaderAutoDetection {
 	}
 	
 	
+	public void processFixturesCSV(String filePath) throws IOException {
+		
+		teamService.updateFromDB();
+		fixtureService.updateFromDB();
+		playerService.updateFromDB();
+    	
+        try (
+            Reader reader = Files.newBufferedReader(Paths.get(filePath));
+            CSVParser csvParser = new CSVParser(reader, CSVFormat.DEFAULT
+                    .withFirstRecordAsHeader()
+                    .withIgnoreHeaderCase()
+                    .withTrim());
+        ) 
+        {
+        	for (CSVRecord csvRecord : csvParser) {
+        		
+	        	int code = Integer.parseInt(csvRecord.get("id"));
+				Fixture newFixture = new Fixture();
+				newFixture.setSeason("2017/18");
+				newFixture.setFantasyId(Integer.parseInt(csvRecord.get("id")));
+				newFixture.setEvent(Integer.parseInt(csvRecord.get("event")));
+				
+				newFixture.setDeadlineTime(Date.from(Instant.parse(csvRecord.get("deadline_time"))));
+				newFixture.setKickoffTime(Date.from(Instant.parse(csvRecord.get("kickoff_time"))));
+				newFixture.setAwayTeam(teamService.getTeamByFantasyId2017(Integer.parseInt(csvRecord.get("team_a"))));
+				newFixture.setHomeTeam(teamService.getTeamByFantasyId2017(Integer.parseInt(csvRecord.get("team_h"))));
+				newFixture.setHomeTeamDifficulty(Integer.parseInt(csvRecord.get("team_h_difficulty")));
+				newFixture.setAwayTeamDifficulty(Integer.parseInt(csvRecord.get("team_a_difficulty")));
+				newFixture.setCode(Integer.parseInt(csvRecord.get("code")));
+				newFixture.setHomeTeamScore(Integer.parseInt(csvRecord.get("team_h_score")));
+				newFixture.setAwayTeamScore(Integer.parseInt(csvRecord.get("team_a_score")));
+				newFixture.setFinished(Boolean.parseBoolean(csvRecord.get("finished")));
+				fixtureService.addFixture(newFixture);
+					
+		  }
+        	fixtureService.saveFixtures();
+        }
 
-    public void process(String filePath) throws IOException {
+	}
+	
+	
+
+    /*public void process(String filePath) throws IOException {
 		teamService.updateFromDB();
 		fixtureService.updateFromDB();
 		playerService.updateFromDB();
@@ -203,7 +251,7 @@ public class CSVReaderWithHeaderAutoDetection {
             }
 			playerService.savePlayers();
         }
-    }
+    }*/
             
 	public int getOpponentTeamStrength(String opponentTeam, Boolean wasHome) {
 		int opponentStrength = 0;

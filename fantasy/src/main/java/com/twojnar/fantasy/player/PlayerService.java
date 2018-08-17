@@ -87,17 +87,10 @@ public class PlayerService {
 		this.players = players;
 	}
 	
-	public void completeTeam(FullPerformance fullPerformance) {
-		fullPerformance.setOpponentTeam(teamService.getTeamByFantasyId2018(fullPerformance.getOpponentTeam().getFantasyId2018()));
-	}
+
 	
-	public void completeFixture(FullPerformance fullPerformance) {
-		fullPerformance.setFixture(fixtureService.getFixtureByFantasyId(fullPerformance.getFixture().getFantasyId()));
-	}
-	
-	public void completePerformanceData(FullPerformance fullPerformance) {
-		fullPerformance.setOpponentTeam(teamService.getTeamByFantasyId2018(fullPerformance.getOpponentTeam().getFantasyId2018()));
-		fullPerformance.setFixture(fixtureService.getFixtureByFantasyId(fullPerformance.getFixture().getFantasyId()));
+	public void completeFixtureData(FullPerformance fullPerformance, String season) {
+		fullPerformance.setFixture(fixtureService.getFixtureByFantasyIdAndSeason(fullPerformance.getFixture().getFantasyId(), season));
 	}
 	
 	public void updatePredictions(Player player, int number) throws Exception {

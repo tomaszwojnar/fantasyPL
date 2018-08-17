@@ -27,10 +27,14 @@ public class FixtureUpdateDefinition extends TaskDefinition {
 	@Autowired
 	FantasyFixtureResponse fixtureResponse;
 	
+	@Autowired
+	FantasyStatus fantasyStatus;
+	
 	public void updateFixtures() throws IOException {
 		teamService.updateFromDB();
 		fixtureService.updateFromDB();
 		List<Fixture> fixtures = (List<Fixture>) scrapper.scrapAll("https://fantasy.premierleague.com/drf/fixtures", fixtureResponse);
+		fixtures.stream().forEach(x -> x.setSeason(fantasyStatus.getCurrentSeason()));
 		fixtureService.updateFixtures(fixtures);
 		fixtureService.saveFixtures();
 	}
@@ -38,6 +42,7 @@ public class FixtureUpdateDefinition extends TaskDefinition {
 	public void initialLoad() throws IOException {
 		teamService.updateFromDB();
 		List<Fixture> fixtures = (List<Fixture>) scrapper.scrapAll("https://fantasy.premierleague.com/drf/fixtures", fixtureResponse);
+		fixtures.stream().forEach(x -> x.setSeason(fantasyStatus.getCurrentSeason()));
 		fixtureService.initialLoad(fixtures);
 	}
 }

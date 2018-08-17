@@ -29,6 +29,9 @@ public class Fixture {
 	}
 	
 	@JsonIgnore
+	private String season;
+	
+	@JsonIgnore
 	private String id;
 	
 	@Field("fantasyId")
@@ -211,6 +214,15 @@ public class Fixture {
 	public int getOverallHomeTeamAdvantage() {
 		return this.getHomeTeam().getStrength_overall_home() - this.getAwayTeam().getStrength_overall_home();
 	}
+
+	public String getSeason() {
+		return season;
+	}
+
+	public void setSeason(String season) {
+		this.season = season;
+	}
+	
 	
 	
 	

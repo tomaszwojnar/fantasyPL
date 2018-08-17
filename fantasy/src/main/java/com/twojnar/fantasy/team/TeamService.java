@@ -61,6 +61,11 @@ public class TeamService {
 		.filter(e -> e.getFantasyId2018() == id).collect(Collectors.toList()).get(0);
 	}
 	
+	public Team getTeamByFantasyId2017(int id) {
+		return this.teams.stream()
+		.filter(e -> e.getFantasyId2017() == id).collect(Collectors.toList()).get(0);
+	}
+	
 	public Team getTeamByCode(int code) {
 		return this.getTeams().stream()
 		.filter(e -> e.getCode() == code).collect(Collectors.toList()).get(0);

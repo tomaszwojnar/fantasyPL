@@ -22,9 +22,13 @@ public class ApplicationInit {
 	@Autowired
 	PlayerService playerService;
 	
+	@Autowired
+	FantasyStatus fantasyStatus;
+	
 
 	public void run() throws Exception {
     	
+		fantasyStatus.updateStatus();
 		teamService.updateFromDB();
     	fixtureService.updateFromDB();
     	playerService.updateFromDB();

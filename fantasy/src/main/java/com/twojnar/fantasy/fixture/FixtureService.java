@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,10 +65,18 @@ public class FixtureService {
 	}
 	
 	public void completeTeamInfo(Fixture fixture) {
-		
-		fixture.setAwayTeam(teamService.getTeamByFantasyId2018(fixture.getAwayTeam().getFantasyId2018()));
-		fixture.setHomeTeam(teamService.getTeamByFantasyId2018(fixture.getHomeTeam().getFantasyId2018()));
-		
+		switch (fixture.getSeason()) {
+		case "2018/19":
+			fixture.setAwayTeam(teamService.getTeamByFantasyId2018(fixture.getAwayTeam().getFantasyId2018()));
+			fixture.setHomeTeam(teamService.getTeamByFantasyId2018(fixture.getHomeTeam().getFantasyId2018()));
+			break;
+		case "2017/18" :
+			fixture.setAwayTeam(teamService.getTeamByFantasyId2017(fixture.getAwayTeam().getFantasyId2017()));
+			fixture.setHomeTeam(teamService.getTeamByFantasyId2017(fixture.getHomeTeam().getFantasyId2017()));
+			break;
+		default :
+			throw new NoSuchElementException();
+		}
 	}
 	
 	public void initialLoad(List<Fixture> fixtures) {
@@ -83,9 +93,9 @@ public class FixtureService {
 		return this.fixtures;
 	}
 	
-	public Fixture getFixtureByFantasyId(int id) {
+	public Fixture getFixtureByFantasyIdAndSeason(int id, String season) {
 		return this.fixtures.stream()
-		.filter(e -> e.getFantasyId() == id).collect(Collectors.toList()).get(0);
+		.filter(e -> e.getFantasyId() == id && e.getSeason().equalsIgnoreCase(season)).collect(Collectors.toList()).get(0);
 	}
 	
 	/**
@@ -118,7 +128,5 @@ public class FixtureService {
 		return player.getPlayerProfile().getTeam().equals(fixture.getAwayTeam()) || player.getPlayerProfile().getTeam().equals(fixture.getHomeTeam());
 		
 	}
-	
-	
 
 }

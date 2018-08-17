@@ -19,8 +19,6 @@ public abstract class Performance {
 	TeamService teamService;
 	
 	List<Prediction> predictions = new ArrayList<Prediction>();
-	
-	private String season;
 
 	@JsonProperty("team_h_score")
 	private int teamHomeScore;
@@ -541,14 +539,6 @@ public abstract class Performance {
 
 	public void setDribbles(int dribbles) {
 		this.dribbles = dribbles;
-	}
-
-	public String getSeason() {
-		return season;
-	}
-
-	public void setSeason(String season) {
-		this.season = season;
 	}
 
 	public List<Prediction> getPredictions() {

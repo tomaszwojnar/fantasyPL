@@ -48,10 +48,10 @@ public class TasksRunner {
 		//teamUpdateDefinition.initialLoad();
 		//teamUpdateDefinition.updateTeams();
 		//fixtureUpdateDefinition.initialLoad();
+		//fixtureUpdateDefinition.updateFixtures();
 		//CSVReader.processTeamsCSV("D:/IT Projects/fantasy/teams.csv");
+		CSVReader.processFixturesCSV("D:/IT Projects/fantasy/fixtures.csv");
 		//teamService.saveTeams();
-		//playerUpdateDefinition.initialLoad();
-		//playerUpdateDefinition.updateHistorySeasons();
 		//playerUpdateDefinition.updatePerformances();
 		System.out.println("Done");
 	
