@@ -116,7 +116,6 @@ public class CSVReaderWithHeaderAutoDetection {
 				newFixture.setSeason("2017/18");
 				newFixture.setFantasyId(Integer.parseInt(csvRecord.get("id")));
 				newFixture.setEvent(Integer.parseInt(csvRecord.get("event")));
-				
 				newFixture.setDeadlineTime(Date.from(Instant.parse(csvRecord.get("deadline_time"))));
 				newFixture.setKickoffTime(Date.from(Instant.parse(csvRecord.get("kickoff_time"))));
 				newFixture.setAwayTeam(teamService.getTeamByFantasyId2017(Integer.parseInt(csvRecord.get("team_a"))));
@@ -136,36 +135,45 @@ public class CSVReaderWithHeaderAutoDetection {
 	}
 	
 	
-
-    /*public void process(String filePath) throws IOException {
+	public void processPlayerProfileCSV(String filePath) throws IOException {
+		
 		teamService.updateFromDB();
 		fixtureService.updateFromDB();
 		playerService.updateFromDB();
     	
-    	Map<String, String> mapa = new HashMap<String, String>();
-    	
-    	mapa.put("1", "Arsenal");
-    	mapa.put("2", "Bournemouth");
-    	mapa.put("3", "Brighton");
-    	mapa.put("4", "Burnley");
-    	mapa.put("5", "Chelsea");
-    	mapa.put("6", "Crystal Palace");
-    	mapa.put("7", "Everton");
-    	mapa.put("8", "Huddersfield");
-    	mapa.put("9", "Leicester");
-    	mapa.put("10", "Liverpool");
-    	mapa.put("11", "Man City");
-    	mapa.put("12", "Man Utd");
-    	mapa.put("13", "Newcastle");
-    	mapa.put("14", "Southampton");
-    	mapa.put("15", "Stoke");
-    	mapa.put("16", "Swansea");
-    	mapa.put("17", "Spurs");
-    	mapa.put("18", "Watford");
-    	mapa.put("19", "West Brom");
-    	mapa.put("20", "West Ham");
-    	
-    	
+        try (
+            Reader reader = Files.newBufferedReader(Paths.get(filePath));
+            CSVParser csvParser = new CSVParser(reader, CSVFormat.DEFAULT
+                    .withFirstRecordAsHeader()
+                    .withIgnoreHeaderCase()
+                    .withTrim());
+        ) 
+        {
+        	for (CSVRecord csvRecord : csvParser) {
+        		
+                int code = Integer.parseInt(csvRecord.get("code"));
+        		try {
+        			Player player = playerService.getPlayerByCode(code);
+        			player.getPlayerProfile().setFantasyId2017(Integer.parseInt(csvRecord.get("id")));
+        			playerService.getHistorySeason(player, "2017/18").setTeam(teamService.getTeamByCode(Integer.parseInt(csvRecord.get("team_code"))));
+        		}
+        		catch (NoSuchElementException e) {
+        			continue;
+        			
+        		}
+		  }
+        	playerService.savePlayers();
+        }
+
+	}
+	
+
+    /*public void processHistoryPerfomarnces(String filePath) throws IOException {
+		teamService.updateFromDB();
+		fixtureService.updateFromDB();
+		playerService.updateFromDB();
+    
+		
         try (
             Reader reader = Files.newBufferedReader(Paths.get(filePath));
             CSVParser csvParser = new CSVParser(reader, CSVFormat.DEFAULT
@@ -252,17 +260,7 @@ public class CSVReaderWithHeaderAutoDetection {
 			playerService.savePlayers();
         }
     }*/
-            
-	public int getOpponentTeamStrength(String opponentTeam, Boolean wasHome) {
-		int opponentStrength = 0;
-		Team opponent = teamService.findByName(opponentTeam);
-		if (opponent != null) {
-			opponentStrength = (wasHome) ? opponent.getStrength_overall_home() : opponent.getStrength_overall_away();
-		}
-		else opponentStrength = 1000;
-		return opponentStrength;
-	}
-           
+                
 }
 
 

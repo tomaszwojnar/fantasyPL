@@ -2,6 +2,7 @@ package com.twojnar.fantasy.player;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,12 +61,27 @@ public class PlayerService {
 	public void updateProfile(PlayerProfile profile) {
 		this.players.stream()
 		.filter(e -> e.getPlayerProfile().getCode() == profile.getCode()).findFirst().ifPresent(x -> {
+			profile.setFantasyId2017(x.getPlayerProfile().getFantasyId2017());
 			x.setPlayerProfile(profile);
 			x.getPlayerProfile().setTeam(teamService.getTeamByFantasyId2018(x.getPlayerProfile().getTeam().getFantasyId2018()));
 		});
 	}
 	
 	public void updateHistorySeasons(int code, List<HistorySeason> historySeasons) {
+		/*this.players.stream()
+		.filter(e -> e.getPlayerProfile().getCode() == code)
+		.findFirst()
+		.ifPresent(x -> {
+			historySeasons.stream()
+						  .filter(y -> y.getSeasonName().equalsIgnoreCase("2017/18"))
+						  .findFirst()
+						  .ifPresent(y -> y.setTeam(x.getHistorySeasons()
+								  .stream()
+								  .filter(z -> z.getSeasonName().equalsIgnoreCase("2017/18"))
+								  .findFirst()
+								  .get().getTeam()
+								  ));*/
+		
 		this.players.stream()
 		.filter(e -> e.getPlayerProfile().getCode() == code).findFirst().ifPresent(x -> {
 			x.setHistorySeasons(historySeasons);
@@ -124,6 +140,25 @@ public class PlayerService {
 			throw new Exception("Multiple performances - db problem");
 		}
 	}
-
+	
+	public Player getPlayerByCode(int code) {
+		return this.getPlayers().stream().filter(x -> x.getPlayerProfile().getCode() == code).findFirst().get();
+	}
+	
+	public Player getPlayerByFantasyIdAndSeason(int id, String season) {
+		
+		switch (season) {
+		case "2018/19" :
+			return this.getPlayers().stream().filter(x -> x.getPlayerProfile().getFantasyId2018() == id).findFirst().get();
+		case "2017/18" :
+			return this.getPlayers().stream().filter(x -> x.getPlayerProfile().getFantasyId2017() == id).findFirst().get();
+		default :
+			return null;
+		}
+	}
+	
+	public HistorySeason getHistorySeason(Player player, String season) {
+		return player.getHistorySeasons().stream().filter(x -> x.getSeasonName().equalsIgnoreCase(season)).findFirst().get();
+	}
 }
 

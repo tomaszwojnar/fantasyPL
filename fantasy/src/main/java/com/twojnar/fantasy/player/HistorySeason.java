@@ -7,6 +7,7 @@ import java.util.List;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.twojnar.fantasy.team.Team;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class HistorySeason {
@@ -18,7 +19,7 @@ public class HistorySeason {
 	private int fantasyId;
 	
 	@JsonIgnore
-	private String team;
+	private Team team;
 	
 	@JsonProperty("season_name")
 	private String seasonName;
@@ -277,11 +278,11 @@ public class HistorySeason {
 		this.historyPerformances.add(historyPerformance);
 	}
 
-	public String getTeam() {
+	public Team getTeam() {
 		return team;
 	}
 
-	public void setTeam(String team) {
+	public void setTeam(Team team) {
 		this.team = team;
 	}
 	
