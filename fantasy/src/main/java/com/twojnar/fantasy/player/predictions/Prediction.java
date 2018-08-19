@@ -12,44 +12,45 @@ public class Prediction {
 	
 	private Date datePredictionMade;
 	
-	private AbstractPredictionMethod predictionMethod;
+	private String predictionMethodName;
 	
 	private double predictedPoints;
 	
+	private int playerCode;
+	
+	private int fixtureCode;
+	
+	private int round;
+	
 	private Map<String, Object> calculationDetails;
-	
-	@Transient
-	private Player player;
-	
-	@Transient
-	private Fixture fixture;
 	
 	public Prediction() {
 		super();
 	}
 	
-	public Prediction(Player player, AbstractPredictionMethod predictionMethod, Fixture fixture) {
-		this.player = player;
-		this.predictionMethod = predictionMethod;
-		this.fixture = fixture;
-		this.predictedPoints = predictionMethod.makePrediction(this.player, this.fixture);
+	public Prediction(int playerCode, int fixtureCode, String predictionMethodName, int round, double predictedPoints) {
+		this.fixtureCode = fixtureCode;
+		this.playerCode = playerCode;
+		this.predictionMethodName = predictionMethodName;
 		this.datePredictionMade = new Date();
+		this.predictedPoints = predictedPoints;
+		this.round = round;
 	}
 
-	public Date getDatePredicitionMade() {
+	public Date getDatePredictionMade() {
 		return datePredictionMade;
 	}
 
-	public void setDatePredicitionMade(Date datePredicitionMade) {
-		this.datePredictionMade = datePredicitionMade;
+	public void setDatePredictionMade(Date datePredictionMade) {
+		this.datePredictionMade = datePredictionMade;
 	}
 
-	public AbstractPredictionMethod getPredictionMethod() {
-		return predictionMethod;
+	public String getPredictionMethodName() {
+		return predictionMethodName;
 	}
 
-	public void setPredictionMethod(AbstractPredictionMethod predictionMethod) {
-		this.predictionMethod = predictionMethod;
+	public void setPredictionMethodName(String predictionMethodName) {
+		this.predictionMethodName = predictionMethodName;
 	}
 
 	public double getPredictedPoints() {
@@ -60,6 +61,22 @@ public class Prediction {
 		this.predictedPoints = predictedPoints;
 	}
 
+	public int getPlayerCode() {
+		return playerCode;
+	}
+
+	public void setPlayerCode(int playerCode) {
+		this.playerCode = playerCode;
+	}
+
+	public int getFixtureCode() {
+		return fixtureCode;
+	}
+
+	public void setFixtureCode(int fixtureCode) {
+		this.fixtureCode = fixtureCode;
+	}
+
 	public Map<String, Object> getCalculationDetails() {
 		return calculationDetails;
 	}
@@ -68,21 +85,15 @@ public class Prediction {
 		this.calculationDetails = calculationDetails;
 	}
 
-	public Player getPlayer() {
-		return player;
+	public int getRound() {
+		return round;
 	}
 
-	public void setPlayer(Player player) {
-		this.player = player;
+	public void setRound(int round) {
+		this.round = round;
 	}
 
-	public Fixture getFixture() {
-		return fixture;
-	}
 
-	public void setFixture(Fixture fixture) {
-		this.fixture = fixture;
-	}
 	
 	
 }

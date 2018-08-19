@@ -46,16 +46,16 @@ public class TasksRunner {
 	public void run(String... args) throws Exception {
 		
 		//teamUpdateDefinition.initialLoad();
-		//teamUpdateDefinition.updateTeams();
+		teamUpdateDefinition.updateTeams();
 		//fixtureUpdateDefinition.initialLoad();
-		//fixtureUpdateDefinition.updateFixtures();
+		fixtureUpdateDefinition.updateFixtures();
 		//CSVReader.processTeamsCSV("D:/IT Projects/fantasy/teams.csv");
 		//CSVReader.processFixturesCSV("D:/IT Projects/fantasy/fixtures.csv");
 		//CSVReader.processPlayerProfileCSV("D:/IT Projects/fantasy/players.csv");
-		CSVReader.processHistoryPerfomarnces("D:/IT Projects/fantasy/player_match_details.csv");
-		//playerUpdateDefinition.updateProfiles();
+		//CSVReader.processHistoryPerfomarnces("D:/IT Projects/fantasy/player_match_details.csv");
+		playerUpdateDefinition.updateProfiles();
 		//teamService.saveTeams();
-		//playerUpdateDefinition.updatePerformances();
+		playerUpdateDefinition.updatePerformances();
 		System.out.println("Done");
 	
 	}}

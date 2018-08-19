@@ -561,17 +561,17 @@ public abstract class Performance {
 		this.predictions.add(prediction);
 	}
 	
-	public Prediction getLatestPredictionByMethod(AbstractPredictionMethod method) {
+	public Prediction getLatestPredictionByMethod(String method) {
 		if (this.predictions.size() == 0) return null;
 		else {
-			return this.predictions.stream().filter(x -> x.getPredictionMethod().getClass().equals(method.getClass())).max(Comparator.comparing(Prediction::getDatePredicitionMade, Comparator.nullsLast(Comparator.reverseOrder()))).get();
+			return this.predictions.stream().filter(x -> x.getPredictionMethodName().equalsIgnoreCase(method)).max(Comparator.comparing(Prediction::getDatePredictionMade, Comparator.nullsLast(Comparator.reverseOrder()))).get();
 		}
 	}
 	
 	public Prediction getLatestPrediction() {
 		if (this.predictions.size() == 0) return null;
 		else {
-			return this.predictions.stream().max(Comparator.comparing(Prediction::getDatePredicitionMade, Comparator.nullsLast(Comparator.reverseOrder()))).get();
+			return this.predictions.stream().max(Comparator.comparing(Prediction::getDatePredictionMade, Comparator.nullsLast(Comparator.reverseOrder()))).get();
 		}
 	}
 	

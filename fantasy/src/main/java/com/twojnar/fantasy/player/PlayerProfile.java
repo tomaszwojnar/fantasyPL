@@ -171,7 +171,7 @@ public class PlayerProfile {
 	
 	@JsonProperty("element_type")
 	private int position;
-
+	
 	public int getFantasyId2018() {
 		return fantasyId2018;
 	}

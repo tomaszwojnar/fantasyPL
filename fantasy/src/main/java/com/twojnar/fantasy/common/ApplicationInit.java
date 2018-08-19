@@ -33,9 +33,9 @@ public class ApplicationInit {
     	fixtureService.updateFromDB();
     	playerService.updateFromDB();
     	
+    	
     	taskRunner.run();
     	
-
 	}
 
 }

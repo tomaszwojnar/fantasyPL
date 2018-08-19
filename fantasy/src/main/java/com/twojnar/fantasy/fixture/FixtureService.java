@@ -115,7 +115,7 @@ public class FixtureService {
 	public List<Fixture> getNextFixturesForTeam(Team team, int number) {
 		
 		List<Fixture> list = this.getFixturesForTeam(team).stream()
-									 .filter(x ->x.getDeadlineTime().after(new Date()))
+									 .filter(x ->x.getEvent()>fantasyStatus.getCurrentEvent())
 									 .sorted(Comparator.comparingInt(Fixture::getEvent))
 									 .limit(number)
 									 .collect(Collectors.toList());

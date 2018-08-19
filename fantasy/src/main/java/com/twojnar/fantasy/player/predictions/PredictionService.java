@@ -28,15 +28,24 @@ public class PredictionService {
 		return null;
 	}
 	
-	public List<Prediction> makePredictions(Player player, int number) {
+	public List<Prediction> makePredictions(Player player, int numberOfGames, AbstractPredictionMethod predictionMethod) {
 		List<Prediction> predictions = new ArrayList<Prediction>();
-		List<Fixture> fixtures = fixtureService.getNextFixturesForTeam(player.getPlayerProfile().getTeam(), number);
+		List<Fixture> fixtures = fixtureService.getNextFixturesForTeam(player.getPlayerProfile().getTeam(), numberOfGames);
 		fixtures.stream().forEach(x -> {
-			predictions.add(new Prediction(player, simpleRegressionPastSeason, x));
+			Prediction prediction = new Prediction(
+						player.getPlayerProfile().getCode(),
+						x.getCode(),
+						predictionMethod.getClass().getSimpleName(),
+						x.getEvent(),
+						predictionMethod.makePrediction(player, x));
+						predictions.add(prediction);
 		});
 		return predictions;
 	}
 	
+	public AbstractPredictionMethod getMethod() {
+		return simpleRegressionPastSeason;
+		// TODO Add method selection logic
+	}
 	
-
 }
