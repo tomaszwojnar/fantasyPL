@@ -75,8 +75,7 @@ public class PlayerUpdateDefinition extends TaskDefinition {
 							fantasyStatus.getCurrentEvent()+1,
 							x.getExpectedPointsNextRound()),
 					player,
-					fantasyStatus.getCurrentSeason(),
-					fantasyStatus.getCurrentEvent()+1
+					nextFixture
 			);
 		});
 		playerService.savePlayers();

@@ -53,6 +53,7 @@ public class TasksRunner {
 		//CSVReader.processFixturesCSV("D:/IT Projects/fantasy/fixtures.csv");
 		//CSVReader.processPlayerProfileCSV("D:/IT Projects/fantasy/players.csv");
 		//CSVReader.processHistoryPerfomarnces("D:/IT Projects/fantasy/player_match_details.csv");
+		//playerUpdateDefinition.initialLoad();
 		playerUpdateDefinition.updateProfiles();
 		//teamService.saveTeams();
 		playerUpdateDefinition.updatePerformances();

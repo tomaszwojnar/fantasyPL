@@ -1,6 +1,7 @@
 package com.twojnar.fantasy.player;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
@@ -99,10 +100,13 @@ public class PlayerService {
 	public void updatePerformances(int playerCode, List<FullPerformance> performances, Boolean retainExistingPredictions) {
 		Player player = this.getPlayerByCode(playerCode);
 		List<FullPerformance> existingPerformances = player.getPerformances();
+		List<FullPerformance> futurePerformances = existingPerformances.stream().filter(x -> x.getFixture().getKickoffTime().after(new Date())).collect(Collectors.toList());
 		performances.stream().forEach(x -> this.completeFixtureData(x, "2018/19"));
 		performances.stream()
 			.filter(x -> this.performanceExists(existingPerformances, x))
 			.forEach(x -> x.setPredictions(this.getPerformanceByRoundAndPlayer(player, x.getRound()).getPredictions()));
+		performances.addAll(futurePerformances);
+		player.setPerformances(performances);
 	}
 
 	public List<Player> getPlayers() {
@@ -138,17 +142,17 @@ public class PlayerService {
 	 * 
 	 */
 	
-	public void addPredictionToPlayerPerformance(Prediction prediction, Player player, String season, int round) {
+	public void addPredictionToPlayerPerformance(Prediction prediction, Player player, Fixture fixture) {
 		player.getPerformances()
 			  .stream()
-			  .filter(x -> x.getRound() == round)
+			  .filter(x -> x.getRound() == fixture.getEvent())
 			  .findFirst()
 			  .ifPresentOrElse(
 					  x -> x.addPrediction(prediction),
 					  () -> {
 						  FullPerformance performance = new FullPerformance();
-						  performance.setFixture(fixtureService.getFixtureByFantasyIdAndSeason(round, season));
-						  performance.setRound(round);
+						  performance.setFixture(fixture);
+						  performance.setRound(fixture.getEvent());
 						  performance.addPrediction(prediction);
 						  player.getPerformances().add(performance);
 					  }	  		
