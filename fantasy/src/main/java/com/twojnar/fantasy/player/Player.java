@@ -17,6 +17,9 @@ public class Player {
 	
 	private PlayerProfile playerProfile;
 	
+	@JsonIgnore
+	private List<PlayerAggregates> aggregates;
+	
 	private List<HistorySeason> historySeasons = new ArrayList<HistorySeason>();
 	
 	private List<FullPerformance> performances = new ArrayList<FullPerformance>();
@@ -68,10 +71,13 @@ public class Player {
 			return false;
 		return true;
 	}
-	
-	
-	
-	
-	
+
+	public List<PlayerAggregates> getAggregates() {
+		return aggregates;
+	}
+
+	public void setAggregates(List<PlayerAggregates> aggregates) {
+		this.aggregates = aggregates;
+	}
 
 }

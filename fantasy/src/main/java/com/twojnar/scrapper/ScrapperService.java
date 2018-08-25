@@ -20,23 +20,13 @@ public class ScrapperService {
 	@Autowired
 	Response response;
 	
-	public List<?> scrapAll(String uri, IResponse response) throws JsonParseException, JsonMappingException, IOException {
-		String JSONResponse =  requestService.sendRequest(requestService.defineRequest(uri));
-		return response.getObjectsFromString(JSONResponse);
-	}
-	
-	public List<?> scrapField(String uri, String field, IResponse response) throws JsonParseException, JsonMappingException, IOException, JSONException {
-		return response.getObjectsFromString(new JSONObject(requestService.sendRequest(requestService.defineRequest(uri))).getString(field));
-	}
-	
 	public List<?> scrapAll(String uri, Object object) throws JsonParseException, JsonMappingException, IOException {
 		String JSONResponse =  requestService.sendRequest(requestService.defineRequest(uri));
-		return response.getObjectsFromString(JSONResponse, object);
+		return response.getListFromString(JSONResponse, object);
 	}
 	
-	public List<?> scrapField(String uri, String field, Object object, int mock) throws JsonParseException, JsonMappingException, IOException, JSONException {
-		mock = 1;
-		return response.getObjectsFromString(new JSONObject(requestService.sendRequest(requestService.defineRequest(uri))).getString(field), object);
+	public List<?> scrapField(String uri, String field, Object object) throws JsonParseException, JsonMappingException, IOException, JSONException {
+		return response.getListFromString(new JSONObject(requestService.sendRequest(requestService.defineRequest(uri))).getString(field), object);
 	}
 }
 

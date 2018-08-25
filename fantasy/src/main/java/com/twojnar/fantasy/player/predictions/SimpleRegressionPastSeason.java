@@ -1,10 +1,16 @@
 package com.twojnar.fantasy.player.predictions;
 
+import java.util.NoSuchElementException;
 
+import org.apache.commons.math3.stat.regression.SimpleRegression;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.twojnar.fantasy.fixture.Fixture;
 import com.twojnar.fantasy.fixture.FixtureService;
+import com.twojnar.fantasy.player.HistorySeason;
+import com.twojnar.fantasy.player.Player;
+import com.twojnar.fantasy.player.PlayerService;
 import com.twojnar.fantasy.team.TeamService;
 
 
@@ -16,49 +22,45 @@ public class SimpleRegressionPastSeason extends AbstractPredictionMethod {
 	TeamService teamService;
 	
 	@Autowired
+	PlayerService playerService;
+	
+	@Autowired
 	FixtureService fixtureService;
 	
 	
-	/*public double makePrediction(Player player, Fixture fixture) {
+	public double makePrediction(Player player, Fixture fixture) {
 		
-		if (!fixtureService.isPlayerInTeams(player, fixture)) throw new NoSuchElementException(player.getPlayerProfile().getLastName() + "does not play in fixture " + fixture.getFantasyId());
+		if (!playerService.isPlayerInFixture(player, fixture)) throw new NoSuchElementException(player.getPlayerProfile().getLastName() + "does not play in fixture " + fixture.getFantasyId());
 		
 	    SimpleRegression simpleRegression = new SimpleRegression(true);
 
 	    // passing data to the model
 	    // model will be fitted automatically by the class 
 
-			HistorySeason historySeason;
-
-			historySeason = player.getHistorySeasons().stream().filter(x -> x.getSeasonName().equals("2017/18")).findFirst().get();
-
-			String team = historySeason.getTeam();
-			Team foundTeam = null;
-			try {
-				foundTeam = teamService.findByName(team);
-			}
-				catch (NoSuchElementException e) {	
-			}
+			HistorySeason historySeason = playerService.getHistorySeason(player, "2017/18");
 			
-			int strengthHome = (foundTeam != null) ? foundTeam.getStrength_overall_home() : 1000;
-			int strengthAway = (foundTeam != null) ? foundTeam.getStrength_overall_away() : 1000;
-					
-					
-			historySeason.getHistoryPerformances().stream().filter(x-> x.getMinutes() > 45).forEach(y -> {
-		        int strengthTeam = (y.getWasHome()) ? strengthHome : strengthAway;
-				simpleRegression.addData(strengthTeam - y.getOpponentStrength(), y.getTotalPoints());
-				});
-			
-			int teamDifferential = player.getPlayerProfile().getTeam().equals(fixture.getHomeTeam()) ? fixture.getOverallHomeTeamAdvantage() : -fixture.getOverallHomeTeamAdvantage();
-			
-			
-			return simpleRegression.predict(teamDifferential);
+			if (historySeason != null)
+					{
+						historySeason.getHistoryPerformances().stream().forEach(y -> {
+					        int strengthTeam = (y.getWasHome()) ? y.getFixture().getHomeTeam().getStrength_overall_home() : y.getFixture().getAwayTeam().getStrength_overall_away();
+					        int opponentStrength = (y.getWasHome()) ? y.getFixture().getAwayTeam().getStrength_overall_away() : y.getFixture().getHomeTeam().getStrength_overall_home();
+							simpleRegression.addData(strengthTeam - opponentStrength, y.getTotalPoints());
+							});
+						
+						int teamDifferential = player.getPlayerProfile().getTeam().equals(fixture.getHomeTeam()) ? fixture.getOverallHomeTeamAdvantage() : -fixture.getOverallHomeTeamAdvantage();
+						
+						
+						return simpleRegression.predict(teamDifferential);
+					}
+			else throw new NoSuchElementException("No Last Season Data");
 	}
 			
 	public void gatherData(Player player, Fixture fixture) {
 		// TODO Auto-generated method stub
 		
-	}*/
+	}
+	
+	
 
 	
 

@@ -14,7 +14,7 @@ public class Prediction {
 	
 	private String predictionMethodName;
 	
-	private double predictedPoints;
+	private Double predictedPoints;
 	
 	private int playerCode;
 	
@@ -53,7 +53,7 @@ public class Prediction {
 		this.predictionMethodName = predictionMethodName;
 	}
 
-	public double getPredictedPoints() {
+	public Double getPredictedPoints() {
 		return predictedPoints;
 	}
 

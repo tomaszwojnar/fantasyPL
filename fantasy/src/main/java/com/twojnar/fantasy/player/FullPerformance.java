@@ -4,6 +4,7 @@ import java.util.Map;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.twojnar.fantasy.fixture.Fixture;
+import com.twojnar.fantasy.team.Team;
 
 
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -52,6 +53,10 @@ public class FullPerformance extends Performance {
 		} else if (!fixture.equals(other.fixture))
 			return false;
 		return true;
+	}
+	
+	public boolean isHome(Team team) {
+		return this.getFixture().getHomeTeam().equals(team);
 	}
 }
 

@@ -2,7 +2,7 @@ package com.twojnar.fantasy.player;
 
 import java.util.ArrayList;
 import java.util.List;
-
+import java.util.Optional;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -283,6 +283,12 @@ public class HistorySeason {
 			}
 			);
 		this.historyPerformances.add(historyPerformance);
+	}
+	
+	public FullPerformance getHistoryPerformanceByRound(int round) {
+		Optional <FullPerformance> optional = this.getHistoryPerformances().stream().filter(x -> x.getRound() == round).findFirst();
+		if (optional.isPresent()) return optional.get();
+		else return null;
 	}
 
 	public Team getTeam() {

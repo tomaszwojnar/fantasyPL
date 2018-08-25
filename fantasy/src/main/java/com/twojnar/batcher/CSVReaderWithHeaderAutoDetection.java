@@ -91,6 +91,7 @@ public class CSVReaderWithHeaderAutoDetection {
 					teamService.addTeam(newTeam);
 		        	}
         	}
+        	teamService.saveTeams();
         } catch (IOException e) {
         	System.out.println("File not found.");
 		}

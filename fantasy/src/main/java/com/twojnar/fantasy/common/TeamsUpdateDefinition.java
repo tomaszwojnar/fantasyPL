@@ -8,7 +8,6 @@ import org.springframework.stereotype.Component;
 
 import com.twojnar.fantasy.team.Team;
 import com.twojnar.fantasy.team.TeamService;
-import com.twojnar.scrapper.FantasyTeamResponse;
 import com.twojnar.scrapper.ScrapperService;
 
 @Component
@@ -21,16 +20,14 @@ public class TeamsUpdateDefinition extends TaskDefinition {
 	TeamService teamService;
 	
 	public void updateTeams() throws IOException {
-		FantasyTeamResponse teams = new FantasyTeamResponse();
-		List<Team> teamsList = (List<Team>) scrapper.scrapAll("https://fantasy.premierleague.com/drf/teams", teams);
+		List<Team> teamsList = (List<Team>) scrapper.scrapAll("https://fantasy.premierleague.com/drf/teams", new Team());
 		teamService.updateFromDB();
 		teamService.updateTeams(teamsList);
 		teamService.saveTeams();
 	}
 	
 	public void initialLoad() throws IOException {
-		FantasyTeamResponse teams = new FantasyTeamResponse();
-		List<Team> teamsList = (List<Team>) scrapper.scrapAll("https://fantasy.premierleague.com/drf/teams", teams);
+		List<Team> teamsList = (List<Team>) scrapper.scrapAll("https://fantasy.premierleague.com/drf/teams", new Team());
 		teamService.initialLoad(teamsList);
 	}
 

@@ -563,9 +563,11 @@ public abstract class Performance {
 	
 	public Prediction getLatestPredictionByMethod(String method) {
 		if (this.predictions.size() == 0) return null;
-		else {
+		if (this.predictions.stream().filter(x -> x.getPredictionMethodName().equalsIgnoreCase(method)).findAny().isPresent())
+		{
 			return this.predictions.stream().filter(x -> x.getPredictionMethodName().equalsIgnoreCase(method)).max(Comparator.comparing(Prediction::getDatePredictionMade, Comparator.nullsLast(Comparator.reverseOrder()))).get();
 		}
+		else return null;
 	}
 	
 	public Prediction getLatestPrediction() {

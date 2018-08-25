@@ -112,10 +112,10 @@ public class FixtureService {
 			|| e.getHomeTeam().getFantasyId2018() == team.getFantasyId2018()).collect(Collectors.toList());
 	}
 	
-	public List<Fixture> getNextFixturesForTeam(Team team, int number) {
+	public List<Fixture> getNextFixturesForTeam(Team team, int number, String season) {
 		
 		List<Fixture> list = this.getFixturesForTeam(team).stream()
-									 .filter(x ->x.getKickoffTime().after(new Date()))
+									 .filter(x ->x.getEvent()>fantasyStatus.getCurrentEvent() && x.getSeason().equals(season))
 									 .sorted(Comparator.comparingInt(Fixture::getEvent))
 									 .limit(number)
 									 .collect(Collectors.toList());
@@ -123,10 +123,8 @@ public class FixtureService {
 
 	}
 	
-	public Boolean isPlayerInTeams(Player player, Fixture fixture) {
-		
-		return player.getPlayerProfile().getTeam().equals(fixture.getAwayTeam()) || player.getPlayerProfile().getTeam().equals(fixture.getHomeTeam());
-		
+	public Boolean isHome(Fixture fixture, Team team) {
+		return fixture.getHomeTeam().equals(team);
 	}
 
 }

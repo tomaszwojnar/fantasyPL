@@ -15,17 +15,17 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class Response implements IResponse {
 
 	@Override
-	public List<?> getObjectsFromString(String string) throws JsonParseException, JsonMappingException, IOException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	
-	public List<?> getObjectsFromString(String string, Object object) throws JsonParseException, JsonMappingException, IOException {
+	public List<?> getListFromString(String string, Object object) throws JsonParseException, JsonMappingException, IOException {
 		ObjectMapper mapper = new ObjectMapper();
 		mapper.configure(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY, true);
 		JavaType listType = mapper
 			    .getTypeFactory()
 			    .constructCollectionType(List.class, object.getClass());
 		return mapper.readValue(string, listType);
+	}
+	
+	@Override
+	public Object getObjectFromString(String string, Object object) throws JsonParseException, JsonMappingException, IOException {
+		return object;
 	}
 }

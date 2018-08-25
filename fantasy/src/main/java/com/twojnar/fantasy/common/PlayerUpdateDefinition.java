@@ -19,9 +19,6 @@ import com.twojnar.fantasy.player.PlayerProfile;
 import com.twojnar.fantasy.player.PlayerService;
 import com.twojnar.fantasy.player.predictions.Prediction;
 import com.twojnar.fantasy.team.TeamService;
-import com.twojnar.scrapper.FantasyPlayerDetailsResponse;
-import com.twojnar.scrapper.FantasyPlayerPerformancesResponse;
-import com.twojnar.scrapper.FantasyPlayerProfileResponse;
 import com.twojnar.scrapper.ScrapperService;
 
 @Component
@@ -40,34 +37,25 @@ public class PlayerUpdateDefinition extends TaskDefinition {
 	FixtureService fixtureService;
 	
 	@Autowired
-	FantasyPlayerProfileResponse playerProfileResponse;
-	
-	@Autowired
-	FantasyPlayerDetailsResponse playerDetailsResponse;
-	
-	@Autowired
-	FantasyPlayerPerformancesResponse playerPerformanceResponse;
-	
-	@Autowired
 	FantasyStatus fantasyStatus;
 	
 	public void initialLoad() throws JsonParseException, JsonMappingException, IOException, JSONException {
-		List<PlayerProfile> playerProfiles = (List<PlayerProfile>) scrapper.scrapAll("https://fantasy.premierleague.com/drf/elements", playerProfileResponse);
+		List<PlayerProfile> playerProfiles = (List<PlayerProfile>) scrapper.scrapAll("https://fantasy.premierleague.com/drf/elements", new PlayerProfile());
 		playerService.initialLoad(playerProfiles);
 		for (Player player : playerService.getPlayers()) {
 			List<HistorySeason> historySeasons = (List<HistorySeason>) scrapper.scrapField(
-				"https://fantasy.premierleague.com/drf/element-summary/" + player.getPlayerProfile().getFantasyId2018(), "history_past", playerDetailsResponse);
+				"https://fantasy.premierleague.com/drf/element-summary/" + player.getPlayerProfile().getFantasyId2018(), "history_past", new PlayerProfile());
 			playerService.updateHistorySeasons(player.getPlayerProfile().getCode(), historySeasons);
 			playerService.savePlayers();
 		}
 	}
 	
 	public void updateProfiles() throws IOException {
-		List<PlayerProfile> playerProfiles = (List<PlayerProfile>) scrapper.scrapAll("https://fantasy.premierleague.com/drf/elements", playerProfileResponse);
+		List<PlayerProfile> playerProfiles = (List<PlayerProfile>) scrapper.scrapAll("https://fantasy.premierleague.com/drf/elements", new PlayerProfile());
 		playerProfiles.stream().forEach(x -> {
 			playerService.updateProfile(x);
 			Player player = playerService.getPlayerByCode(x.getCode());
-			Fixture nextFixture = fixtureService.getNextFixturesForTeam(x.getTeam(), 1).get(0);
+			Fixture nextFixture = fixtureService.getNextFixturesForTeam(x.getTeam(), 1, fantasyStatus.getCurrentSeason()).get(0);
 			playerService.addPredictionToPlayerPerformance(
 					new Prediction(x.getCode(),
 							nextFixture.getCode(),
@@ -83,14 +71,22 @@ public class PlayerUpdateDefinition extends TaskDefinition {
 	
 	public void updatePerformances() throws IOException, JSONException {
 		for (Player player : playerService.getPlayers()) {
-			List<FullPerformance> performances = (List<FullPerformance>) scrapper.scrapField(
-				"https://fantasy.premierleague.com/drf/element-summary/" + player.getPlayerProfile().getFantasyId2018(), "history", playerPerformanceResponse);
+			List<FullPerformance> performances;
+			try 
+			{
+				performances = (List<FullPerformance>) scrapper.scrapField(
+				"https://fantasy.premierleague.com/drf/element-summary/" + player.getPlayerProfile().getFantasyId2018(), "history", new FullPerformance());
+			}
+			catch (Exception e) {
+				continue;
+			}
+
 			playerService.updatePerformances(player.getPlayerProfile().getCode(), performances, true);
 			playerService.savePlayer(player);
 		}
 	}
 	
 	public List<PlayerProfile> getProfiles() throws IOException {
-		return (List<PlayerProfile>) scrapper.scrapAll("https://fantasy.premierleague.com/drf/elements", playerProfileResponse);
+		return (List<PlayerProfile>) scrapper.scrapAll("https://fantasy.premierleague.com/drf/elements", new PlayerProfile());
 	}
 }

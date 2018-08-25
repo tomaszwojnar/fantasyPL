@@ -8,6 +8,8 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 
 public interface IResponse {
 	
-	public List<?> getObjectsFromString(String string) throws JsonParseException, JsonMappingException, IOException;
+	public List<?> getListFromString(String string, Object object) throws JsonParseException, JsonMappingException, IOException;
+	
+	public Object getObjectFromString(String string, Object object) throws JsonParseException, JsonMappingException, IOException;
 	
 }
