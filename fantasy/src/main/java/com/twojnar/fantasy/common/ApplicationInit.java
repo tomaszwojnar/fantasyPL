@@ -2,8 +2,10 @@ package com.twojnar.fantasy.common;
 
 import org.apache.commons.math3.stat.regression.SimpleRegression;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.stereotype.Component;
 
+import com.twojnar.fantasy.fixture.EventService;
 import com.twojnar.fantasy.fixture.FixtureService;
 import com.twojnar.fantasy.player.Player;
 import com.twojnar.fantasy.player.PlayerService;
@@ -15,6 +17,7 @@ import com.twojnar.fantasy.player.predictions.SimpleRegressionPastSeason;
 import com.twojnar.fantasy.team.TeamService;
 
 @Component
+@EnableScheduling
 public class ApplicationInit {
 	
 	@Autowired
@@ -36,6 +39,9 @@ public class ApplicationInit {
 	PredictionService predictionService;
 	
 	@Autowired
+	EventService eventService;
+	
+	@Autowired
 	StatsTests statsTest;
 	
 	@Autowired
@@ -52,11 +58,10 @@ public class ApplicationInit {
 	
 
 	public void run() throws Exception {
-		
-    	
-		fantasyStatus.updateStatus();
+
 		teamService.updateFromDB();
     	fixtureService.updateFromDB();
+    	eventService.updateFromDB();
     	playerService.updateFromDB();
     	
     	taskRunner.run();

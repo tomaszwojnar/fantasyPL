@@ -7,6 +7,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class Lineup {
 	
+	@JsonProperty("event_hisotory.id")
 	private int event;
 	
 	@JsonProperty("active_chip")
@@ -22,6 +23,84 @@ public class Lineup {
 	List<Pick> picks;
 	
 	List<Advice> adviceGiven;
+	
+	EntryHistory entryHistory;
+	
+
+	public class EntryHistory {
+		private int points;
+		private int total_points;
+		private int rank;
+		private int rank_sort;
+		private int overall_rank;
+		private int event_transfers;
+		private int event_transfers_cost;
+		private int value;
+		private int points_on_bench;
+		private int bank;
+		public int getPoints() {
+			return points;
+		}
+		public void setPoints(int points) {
+			this.points = points;
+		}
+		public int getTotal_points() {
+			return total_points;
+		}
+		public void setTotal_points(int total_points) {
+			this.total_points = total_points;
+		}
+		public int getRank() {
+			return rank;
+		}
+		public void setRank(int rank) {
+			this.rank = rank;
+		}
+		public int getRank_sort() {
+			return rank_sort;
+		}
+		public void setRank_sort(int rank_sort) {
+			this.rank_sort = rank_sort;
+		}
+		public int getOverall_rank() {
+			return overall_rank;
+		}
+		public void setOverall_rank(int overall_rank) {
+			this.overall_rank = overall_rank;
+		}
+		public int getEvent_transfers() {
+			return event_transfers;
+		}
+		public void setEvent_transfers(int event_transfers) {
+			this.event_transfers = event_transfers;
+		}
+		public int getEvent_transfers_cost() {
+			return event_transfers_cost;
+		}
+		public void setEvent_transfers_cost(int event_transfers_cost) {
+			this.event_transfers_cost = event_transfers_cost;
+		}
+		public int getValue() {
+			return value;
+		}
+		public void setValue(int value) {
+			this.value = value;
+		}
+		public int getPoints_on_bench() {
+			return points_on_bench;
+		}
+		public void setPoints_on_bench(int points_on_bench) {
+			this.points_on_bench = points_on_bench;
+		}
+		public int getBank() {
+			return bank;
+		}
+		public void setBank(int bank) {
+			this.bank = bank;
+		}
+		
+		
+	}
 
 	public int getEvent() {
 		return event;

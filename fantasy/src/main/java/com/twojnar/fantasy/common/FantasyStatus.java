@@ -34,17 +34,13 @@ public class FantasyStatus {
 	}
 
 	public void updateStatus() throws NumberFormatException, JSONException {
-		try {
+		
 		JSONObject response = new JSONObject(requestService.sendRequest(requestService.defineRequest("https://fantasy.premierleague.com/drf/bootstrap-static")));
 		this.currentEvent = response.getInt("current-event");
 		this.currentDeadLine = new Date(Long.parseLong(response.getJSONArray("events").getJSONObject(this.currentEvent-1).getString("deadline_time_epoch"))*1000);
 		this.finished = Boolean.parseBoolean(response.getJSONArray("events").getJSONObject(this.currentEvent-1).getString("finished"));
 		this.dataChecked = Boolean.parseBoolean(response.getJSONArray("events").getJSONObject(this.currentEvent-1).getString("data_checked"));
 		this.currentSeason = "2018/19";
-		}
-		catch (JSONException e) {
-			System.out.println("System being updated");
-		}
 		
 	}
 

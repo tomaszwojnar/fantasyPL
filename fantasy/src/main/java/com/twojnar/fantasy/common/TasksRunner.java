@@ -6,6 +6,8 @@ import java.util.NoSuchElementException;
 
 import org.apache.commons.math3.stat.regression.SimpleRegression;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import com.twojnar.batcher.CSVReaderWithHeaderAutoDetection;
@@ -47,13 +49,15 @@ public class TasksRunner implements Runnable {
 	CSVReaderWithHeaderAutoDetection CSVReader;
 	
 	@Override
+	@Scheduled(cron = "0 15 * * * ?")
 	public void run() {
 		try {
+		fantasyStatus.updateStatus();
 		//teamUpdateDefinition.initialLoad();
-		//teamUpdateDefinition.updateTeams();
+		teamUpdateDefinition.updateTeams();
 		
 		//fixtureUpdateDefinition.initialLoad();
-		//fixtureUpdateDefinition.updateFixtures();
+		fixtureUpdateDefinition.updateFixtures();
 		fixtureUpdateDefinition.updateEvents();
 		//CSVReader.processTeamsCSV("D:/IT Projects/fantasy/teams.csv");
 		//CSVReader.processFixturesCSV("D:/IT Projects/fantasy/fixtures.csv");
@@ -61,9 +65,9 @@ public class TasksRunner implements Runnable {
 		//CSVReader.processHistoryPerfomarnces("D:/IT Projects/fantasy/player_match_details.csv");
 		//playerUpdateDefinition.initialLoad();
 		//playerService.getPlayers().stream().forEach(x -> x.setPerformances(new ArrayList<FullPerformance>()));
-		//playerUpdateDefinition.updateProfiles();
+		playerUpdateDefinition.updateProfiles();
 		//teamService.saveTeams();
-		//playerUpdateDefinition.updatePerformances();
+		playerUpdateDefinition.updatePerformances();
 		//System.out.println("Done");
 		}
 		catch (Exception e) {

@@ -6,7 +6,7 @@ import com.twojnar.fantasy.player.Player;
 public class Pick {
 	
 	@JsonProperty("element")
-	private Player playerId;
+	private Player player;
 	
 	private int position;
 	
