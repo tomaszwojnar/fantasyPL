@@ -1,18 +1,28 @@
 package com.twojnar.fantasy.squad;
 
+import java.util.Date;
 import java.util.List;
 
+import org.springframework.data.mongodb.core.mapping.Document;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+
+@Document(collection = "squads")
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Squad {
 	
 	@JsonIgnore
 	private String id;
 	
-	@JsonProperty("id")
-	private int fantasy_id;
+	@JsonIgnore
+	private Date lastChecked;
 	
+	@JsonProperty("id")
+	private int fantasyId;
+	@JsonProperty("summary_overall_points")
 	private int overall_points;
 
 	private int value;
@@ -36,11 +46,11 @@ public class Squad {
 	}
 
 	public int getFantasyId() {
-		return fantasy_id;
+		return fantasyId;
 	}
 
 	public void setFantasyId(int fantasyId) {
-		this.fantasy_id = fantasyId;
+		this.fantasyId = fantasyId;
 	}
 
 	public int getOverall_points() {
@@ -103,7 +113,7 @@ public class Squad {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + fantasy_id;
+		result = prime * result + fantasyId;
 		return result;
 	}
 
@@ -116,13 +126,17 @@ public class Squad {
 		if (getClass() != obj.getClass())
 			return false;
 		Squad other = (Squad) obj;
-		if (fantasy_id != other.fantasy_id)
+		if (fantasyId != other.fantasyId)
 			return false;
 		return true;
 	}
-	
-	
-	
-	
+
+	public Date getLastChecked() {
+		return lastChecked;
+	}
+
+	public void setLastChecked(Date lastChecked) {
+		this.lastChecked = lastChecked;
+	}
 
 }

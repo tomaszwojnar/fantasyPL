@@ -81,7 +81,7 @@ public class PreviousGamesAttackDefence extends AbstractPredictionMethod {
 			}
 		}
 	    for (int i = fixture.getEvent()-1; i > 0; i--) {
-	    	FullPerformance processedPerformance = playerService.getPerformanceByRoundAndPlayer(player, i);
+	    	FullPerformance processedPerformance = playerService.getPerformanceByPlayerAndRound(player, i);
 	    	
 	    	if (processedPerformance != null && processedPerformance.getRound()<=fantasyStatus.getCurrentEvent()) {
 	    		int strengthDifference = 0;

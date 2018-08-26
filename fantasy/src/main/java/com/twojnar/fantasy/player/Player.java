@@ -3,6 +3,7 @@ package com.twojnar.fantasy.player;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -11,6 +12,9 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 @Document(collection = "players")
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Player {
+	
+	@Autowired
+	PlayerService playerService;
 	
 	@JsonIgnore
 	private String id;
@@ -23,7 +27,7 @@ public class Player {
 	private List<HistorySeason> historySeasons = new ArrayList<HistorySeason>();
 	
 	private List<FullPerformance> performances = new ArrayList<FullPerformance>();
-
+	
 
 	public PlayerProfile getPlayerProfile() {
 		return playerProfile;

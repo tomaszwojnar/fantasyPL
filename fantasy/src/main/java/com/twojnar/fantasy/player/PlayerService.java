@@ -12,6 +12,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 import org.springframework.stereotype.Service;
 
+import com.twojnar.fantasy.common.FantasyStatus;
 import com.twojnar.fantasy.fixture.Fixture;
 import com.twojnar.fantasy.fixture.FixtureService;
 import com.twojnar.fantasy.player.predictions.AbstractPredictionMethod;
@@ -35,6 +36,9 @@ public class PlayerService {
 	
 	@Autowired
 	private PlayerRepository playerRepository;
+	
+	@Autowired
+	private FantasyStatus fantasyStatus;
 	
 	@Autowired
 	private SimpleRegressionPastSeason simpleRegressionPastSeason;
@@ -102,11 +106,11 @@ public class PlayerService {
 	public void updatePerformances(int playerCode, List<FullPerformance> performances, Boolean retainExistingPredictions) {
 		Player player = this.getPlayerByCode(playerCode);
 		List<FullPerformance> existingPerformances = player.getPerformances();
-		List<FullPerformance> futurePerformances = existingPerformances.stream().filter(x -> x.getFixture().getKickoffTime().after(new Date())).collect(Collectors.toList());
+		List<FullPerformance> futurePerformances = existingPerformances.stream().filter(x -> x.getRound()>fantasyStatus.getCurrentEvent()).collect(Collectors.toList());
 		performances.stream().forEach(x -> this.completeFixtureData(x, "2018/19"));
 		performances.stream()
 			.filter(x -> this.performanceExists(existingPerformances, x))
-			.forEach(x -> x.setPredictions(this.getPerformanceByRoundAndPlayer(player, x.getRound()).getPredictions()));
+			.forEach(x -> x.setPredictions(this.getPerformanceByPlayerAndRound(player, x.getRound()).getPredictions()));
 		performances.addAll(futurePerformances);
 		player.setPerformances(performances);
 	}
@@ -130,7 +134,7 @@ public class PlayerService {
 		List<Prediction> predictions = predictionService.makePredictions(player, number, method);
 		
 		for (Prediction prediction : predictions) {
-			Performance performance = this.getPerformanceByRoundAndPlayer(player, prediction.getRound());
+			Performance performance = this.getPerformanceByPlayerAndRound(player, prediction.getRound());
 			
 			if (
 					null == performance.getLatestPredictionByMethod(prediction.getPredictionMethodName())
@@ -168,7 +172,7 @@ public class PlayerService {
 	}
 	
 	
-	public FullPerformance getPerformanceByRoundAndPlayer(Player player, int round) {
+	public FullPerformance getPerformanceByPlayerAndRound(Player player, int round) {
 		List<FullPerformance> performances = this.getPlayers().stream().filter(x -> x.equals(player)).findFirst().get().getPerformances().stream().filter(y -> y.getRound() == round).collect(Collectors.toList());
 		if (performances.size() == 0) {
 			FullPerformance performance = new FullPerformance();
@@ -232,7 +236,7 @@ public class PlayerService {
 	}
 	
 	public Boolean predictionExists(Player player, Prediction prediction) {
-		return this.getPerformanceByRoundAndPlayer(player, prediction.getRound())
+		return this.getPerformanceByPlayerAndRound(player, prediction.getRound())
 			.getPredictions()
 			.stream()
 			.filter(x -> x.getPredictedPoints() == prediction.getPredictedPoints() && x.getPredictionMethodName().equalsIgnoreCase(prediction.getPredictionMethodName()))
