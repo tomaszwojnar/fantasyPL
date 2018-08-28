@@ -239,7 +239,7 @@ public class PlayerService {
 		return this.getPerformanceByPlayerAndRound(player, prediction.getRound())
 			.getPredictions()
 			.stream()
-			.filter(x -> x.getPredictedPoints() == prediction.getPredictedPoints() && x.getPredictionMethodName().equalsIgnoreCase(prediction.getPredictionMethodName()))
+			.filter(x -> x.getPredictedPoints().equals(prediction.getPredictedPoints()) && x.getPredictionMethodName().equalsIgnoreCase(prediction.getPredictionMethodName()))
 			.findFirst()
 			.isPresent();
 	}
@@ -247,6 +247,26 @@ public class PlayerService {
 	public Boolean isPlayerInFixture(Player player, Fixture fixture) {
 		return player.getPlayerProfile().getTeam().equals(fixture.getAwayTeam()) || player.getPlayerProfile().getTeam().equals(fixture.getHomeTeam()) ||
 				player.getHistorySeasons().stream().filter(x -> x.getHistoryPerformances().stream().filter(y -> y.getFixture().equals(fixture)).findFirst().isPresent()).findFirst().isPresent();
+	}
+	
+	public double getPredictedPointsForNextXGames(Player player, int noOfGames) {
+		double points = 0;
+		int currentEvent = fantasyStatus.getCurrentEvent();
+		for (int i = 1; i <= noOfGames; i++) {
+			if (currentEvent + i > 38) break;
+			points += this.getPerformanceByPlayerAndRound(player, currentEvent + i).getAveragePrediction();
+		}
+		return points;
+	}
+	
+	public double getPredictedPointsForNextXGamesUsingMethod(Player player, int noOfGames, String method) {
+		double points = 0;
+		int currentEvent = fantasyStatus.getCurrentEvent();
+		for (int i = 1; i <= noOfGames; i++) {
+			if (currentEvent + i > 38) break;
+			points += this.getPerformanceByPlayerAndRound(player, currentEvent + i).getLatestPredictionByMethod(method).getPredictedPoints();
+		}
+		return points;
 	}
 }
 	

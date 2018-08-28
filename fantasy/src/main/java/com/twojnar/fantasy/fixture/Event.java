@@ -8,9 +8,12 @@ import org.springframework.data.mongodb.core.mapping.Field;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonView;
+import com.twojnar.fantasy.common.View;
 
 @Document(collection = "events")
 @JsonIgnoreProperties(ignoreUnknown = true)
+@JsonView(View.Public.class)
 public class Event {
 	
 	

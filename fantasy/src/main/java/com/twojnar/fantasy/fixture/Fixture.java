@@ -10,12 +10,15 @@ import org.springframework.data.mongodb.core.mapping.Field;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonView;
+import com.twojnar.fantasy.common.View;
 import com.twojnar.fantasy.player.Player;
 import com.twojnar.fantasy.team.Team;
 
 
 @Document(collection = "fixtures")
 @JsonIgnoreProperties(ignoreUnknown = true)
+@JsonView(View.Public.class)
 public class Fixture {
 	
 	

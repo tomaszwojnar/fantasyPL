@@ -1,7 +1,5 @@
 package com.twojnar.fantasy.squad;
 
-public class Advice {
-	
-	
+public interface IAdvice {
 
 }

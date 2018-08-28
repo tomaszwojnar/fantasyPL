@@ -1,19 +1,20 @@
 package com.twojnar.fantasy.squad;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonView;
 import com.twojnar.fantasy.common.BeanUtil;
+import com.twojnar.fantasy.common.View;
 import com.twojnar.fantasy.player.FullPerformance;
 import com.twojnar.fantasy.player.PlayerProfile;
 import com.twojnar.fantasy.player.PlayerService;
 
+@JsonView(View.Public.class)
 public class Pick {
 	
 	
 	@JsonProperty("element")
 	private PlayerProfile playerProfile;
 	
-	@JsonIgnore
 	private FullPerformance performance;
 	
 	@JsonProperty("position")

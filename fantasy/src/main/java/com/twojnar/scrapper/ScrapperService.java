@@ -27,6 +27,7 @@ public class ScrapperService {
 	
 	public List<?> scrapField(String uri, String field, Object object) throws JsonParseException, JsonMappingException, IOException, JSONException {
 		return response.getListFromString(new JSONObject(requestService.sendRequest(requestService.defineRequest(uri))).getString(field), object);
+		
 	}	
 }
 

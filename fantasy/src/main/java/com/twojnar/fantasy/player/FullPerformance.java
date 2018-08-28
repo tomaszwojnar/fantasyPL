@@ -3,10 +3,12 @@ package com.twojnar.fantasy.player;
 import java.util.Map;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonView;
+import com.twojnar.fantasy.common.View;
 import com.twojnar.fantasy.fixture.Fixture;
 import com.twojnar.fantasy.team.Team;
 
-
+@JsonView(View.Public.class)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class FullPerformance extends Performance {
 	

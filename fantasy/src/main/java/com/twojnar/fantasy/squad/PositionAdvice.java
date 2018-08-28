@@ -1,7 +1,11 @@
 package com.twojnar.fantasy.squad;
 
-public class PositionAdvice extends Advice {
+import java.util.HashMap;
+
+import com.twojnar.fantasy.player.Player;
+
+public class PositionAdvice implements IAdvice {
 	
-	private int[] bench; 
+	private HashMap<Integer, Player> positions;
 
 }

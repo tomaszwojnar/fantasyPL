@@ -3,20 +3,19 @@ package com.twojnar.fantasy.player;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.twojnar.fantasy.player.predictions.AbstractPredictionMethod;
 import com.twojnar.fantasy.player.predictions.Prediction;
 import com.twojnar.fantasy.team.TeamService;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public abstract class Performance {
 	
-	@Autowired
-	TeamService teamService;
 	
 	List<Prediction> predictions = new ArrayList<Prediction>();
 
@@ -157,13 +156,6 @@ public abstract class Performance {
 	
 	private int dribbles;
 
-	public TeamService getTeamService() {
-		return teamService;
-	}
-
-	public void setTeamService(TeamService teamService) {
-		this.teamService = teamService;
-	}
 
 	public int getTeamHomeScore() {
 		return teamHomeScore;
@@ -561,6 +553,7 @@ public abstract class Performance {
 		this.predictions.add(prediction);
 	}
 	
+	@JsonIgnore
 	public Prediction getLatestPredictionByMethod(String method) {
 		if (this.predictions.size() == 0) return null;
 		if (this.predictions.stream().filter(x -> x.getPredictionMethodName().equalsIgnoreCase(method)).findAny().isPresent())
@@ -570,6 +563,7 @@ public abstract class Performance {
 		else return null;
 	}
 	
+	@JsonIgnore
 	public Prediction getLatestPrediction() {
 		if (this.predictions.size() == 0) return null;
 		else {
@@ -577,5 +571,31 @@ public abstract class Performance {
 		}
 	}
 	
-
+	@JsonIgnore
+	public List<Prediction> getLatestPredictionPerMethod() {
+		List<Prediction> latestPredictions = new ArrayList<Prediction>();
+		if (this.predictions.size() == 0) return null;
+		for (Prediction prediction : this.predictions.stream().sorted(Comparator.comparing(Prediction::getDatePredictionMade, Comparator.nullsLast(Comparator.reverseOrder()))).collect(Collectors.toList())) {
+			if (prediction.getPredictedPoints() > 0 &&
+					!latestPredictions.stream().filter(p -> p.getPredictionMethodName().equals(prediction.getPredictionMethodName())).findFirst().isPresent()) {
+				latestPredictions.add(prediction);
+			}
+		}
+		return latestPredictions;
+	}
+	
+	@JsonIgnore
+	public double getAveragePrediction() {
+		double avg = 0;
+		int ticker = 0;
+		List<Prediction> predictions = this.getLatestPredictionPerMethod();
+		if (predictions != null && predictions.size() != 0) {
+			for (Prediction prediction : this.getLatestPredictionPerMethod()) {
+				avg = (avg + prediction.getPredictedPoints());
+				ticker++;
+			}
+			avg = avg / ticker;
+		}
+		return avg;
+	}
 }

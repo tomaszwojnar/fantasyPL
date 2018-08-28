@@ -1,6 +1,6 @@
 package com.twojnar.fantasy.squad;
 
-public class CaptainAdvice extends Advice {
+public class CaptainAdvice implements IAdvice {
 	
 	private int captain;
 	

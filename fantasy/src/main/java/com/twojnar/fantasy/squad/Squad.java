@@ -1,17 +1,23 @@
 package com.twojnar.fantasy.squad;
 
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonView;
+import com.twojnar.fantasy.common.View;
+import com.twojnar.fantasy.player.predictions.Prediction;
 
 
 @Document(collection = "squads")
 @JsonIgnoreProperties(ignoreUnknown = true)
+@JsonView(View.Public.class)
 public class Squad {
 	
 	@JsonIgnore
@@ -22,13 +28,15 @@ public class Squad {
 	
 	@JsonProperty("id")
 	private int fantasyId;
+	
 	@JsonProperty("summary_overall_points")
 	private int overall_points;
 
 	private int value;
 	
 	private int bank;
-	
+
+	@JsonView(View.ExtendedPublic.class)
 	private List<Lineup> lineups;
 	
 	private int event_transfers;
@@ -138,5 +146,20 @@ public class Squad {
 	public void setLastChecked(Date lastChecked) {
 		this.lastChecked = lastChecked;
 	}
+	
+	//public Squad withLatestPicksOnly() {
+	//	this.setLineups(this.getLineups().stream().sorted(Comparator.comparing(Lineup::getEvent, Comparator.nullsLast(Comparator.reverseOrder()))).limit(1).collect(Collectors.toList()));
+	//	return this;
+	//}
+	
+	public Lineup getLatestLineup() {
+		return this.getLineups().stream().sorted(Comparator.comparing(Lineup::getEvent, Comparator.nullsLast(Comparator.reverseOrder()))).limit(1).collect(Collectors.toList()).get(0);
+	}
+	
+	public Lineup getLineupByEvent(int eventId) {
+		return this.getLineups().stream().filter(x -> x.getEvent() == eventId).findFirst().get();
+	}
+	
+	
 
 }

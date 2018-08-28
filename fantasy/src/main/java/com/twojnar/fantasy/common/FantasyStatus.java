@@ -52,14 +52,6 @@ public class FantasyStatus {
 		this.currentDeadLine = currentDeadline;
 	}
 
-	public Date getCurrentDeadLine() {
-		return currentDeadLine;
-	}
-
-	public void setCurrentDeadLine(Date currentDeadLine) {
-		this.currentDeadLine = currentDeadLine;
-	}
-
 	public Boolean getFinished() {
 		return finished;
 	}

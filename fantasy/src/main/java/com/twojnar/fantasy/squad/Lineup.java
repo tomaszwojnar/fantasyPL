@@ -6,8 +6,11 @@ import java.util.Map;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonView;
+import com.twojnar.fantasy.common.View;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
+@JsonView(View.Public.class)
 public class Lineup {
 	
 	@JsonIgnore
@@ -17,21 +20,22 @@ public class Lineup {
 	private String activeChip;
 	
 	@JsonProperty("automatic_subs")
-	List<Map<String, Object>> automaticSubs;
+	private List<Map<String, Object>> automaticSubs;
 	
 	@JsonProperty("entry_history")
-	List<Map<String, Object>> eventSummary;
+	//private Map<String, Object> eventSummary;
+	private EntryHistory entryHistory;
 	
 	@JsonProperty("picks")
-	List<Pick> picks;
+	private List<Pick> picks;
 	
 	@JsonIgnore
-	List<Advice> adviceGiven;
-	
-	EntryHistory entryHistory;
+	private List<IAdvice> adviceGiven;
 	
 
+	@JsonIgnoreProperties(ignoreUnknown = true)
 	public class EntryHistory {
+		
 		private int points;
 		private int total_points;
 		private int rank;
@@ -42,6 +46,8 @@ public class Lineup {
 		private int value;
 		private int points_on_bench;
 		private int bank;
+		private int event;
+		
 		public int getPoints() {
 			return points;
 		}
@@ -102,17 +108,14 @@ public class Lineup {
 		public void setBank(int bank) {
 			this.bank = bank;
 		}
-		
-		
+		public int getEvent() {
+			return event;
+		}
+		public void setEvent(int event) {
+			this.event = event;
+		}
 	}
 
-	public int getEvent() {
-		return event;
-	}
-
-	public void setEvent(int event) {
-		this.event = event;
-	}
 
 	public String getActiveChip() {
 		return activeChip;
@@ -130,14 +133,6 @@ public class Lineup {
 		this.automaticSubs = automaticSubs;
 	}
 
-	public List<Map<String, Object>> getEventSummary() {
-		return eventSummary;
-	}
-
-	public void setEventSummary(List<Map<String, Object>> eventSummary) {
-		this.eventSummary = eventSummary;
-	}
-
 	public List<Pick> getPicks() {
 		return picks;
 	}
@@ -146,21 +141,14 @@ public class Lineup {
 		this.picks = picks;
 	}
 
-	public List<Advice> getAdviceGiven() {
+	public List<IAdvice> getAdviceGiven() {
 		return adviceGiven;
 	}
 
-	public void setAdviceGiven(List<Advice> adviceGiven) {
+	public void setAdviceGiven(List<IAdvice> adviceGiven) {
 		this.adviceGiven = adviceGiven;
 	}
 
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + event;
-		return result;
-	}
 
 	@Override
 	public boolean equals(Object obj) {
@@ -171,13 +159,25 @@ public class Lineup {
 		if (getClass() != obj.getClass())
 			return false;
 		Lineup other = (Lineup) obj;
-		if (event != other.event)
+		if (entryHistory.getEvent() != other.entryHistory.getEvent())
 			return false;
 		return true;
 	}
-	
-	
-	
-	
+
+	public EntryHistory getEntryHistory() {
+		return entryHistory;
+	}
+
+	public void setEntryHistory(EntryHistory entryHistory) {
+		this.entryHistory = entryHistory;
+	}
+
+	public int getEvent() {
+		return event;
+	}
+
+	public void setEvent(int event) {
+		this.event = event;
+	}
 
 }

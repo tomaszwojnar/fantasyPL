@@ -73,8 +73,8 @@ public class ApplicationInit {
     	eventService.updateFromDB();
     	playerService.updateFromDB();
     	
+ 
 
-    	
     	//Squad squad = squadService.getSquadByFantasyId(1468690);
 		//if (squad == null) {
 		//	squadService.downloadData(1468690);

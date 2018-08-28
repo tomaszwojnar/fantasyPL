@@ -7,9 +7,12 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonView;
+import com.twojnar.fantasy.common.View;
 
 @Document(collection = "teams")
 @JsonIgnoreProperties(ignoreUnknown = true)
+@JsonView(View.Public.class)
 public class Team implements Serializable {
 		
 	private String id;
