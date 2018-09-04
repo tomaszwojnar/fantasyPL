@@ -1,5 +1,7 @@
 package com.twojnar.fantasy.squad;
 
+import java.util.List;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.twojnar.fantasy.common.BeanUtil;
@@ -15,7 +17,7 @@ public class Pick {
 	@JsonProperty("element")
 	private PlayerProfile playerProfile;
 	
-	private FullPerformance performance;
+	private List<FullPerformance> performances;
 	
 	@JsonProperty("position")
 	private int position;
@@ -74,12 +76,12 @@ public class Pick {
 		this.mutliplier = mutliplier;
 	}
 
-	public FullPerformance getPerformance() {
-		return performance;
+	public List<FullPerformance> getPerformances() {
+		return performances;
 	}
 
-	public void setPerformance(FullPerformance performance) {
-		this.performance = performance;
+	public void setPerformances(List<FullPerformance> performances) {
+		this.performances = performances;
 	}
 	
 	

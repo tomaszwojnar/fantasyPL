@@ -40,9 +40,6 @@ public class PlayerService {
 	@Autowired
 	private FantasyStatus fantasyStatus;
 	
-	@Autowired
-	private SimpleRegressionPastSeason simpleRegressionPastSeason;
-	
 	List<Player> players = new ArrayList<Player>();
 	
 	public void updateFromDB() {
@@ -73,13 +70,14 @@ public class PlayerService {
 	}
 	
 	public void updateProfile(PlayerProfile profile) {
-		this.players.stream()
-		.filter(e -> e.getPlayerProfile().getCode() == profile.getCode()).findFirst().ifPresentOrElse(x -> {
-			profile.setFantasyId2017(x.getPlayerProfile().getFantasyId2017());
-			x.setPlayerProfile(profile);
-			x.getPlayerProfile().setTeam(teamService.getTeamByFantasyId2018(x.getPlayerProfile().getTeam().getFantasyId2018()));
-		},
-				() -> this.addPlayer(profile));
+		Optional<Player> optionalPlayer = this.players.stream()
+				.filter(e -> e.getPlayerProfile().getCode() == profile.getCode()).findFirst();
+		if (optionalPlayer.isPresent()) {
+			Player oldPlayer = optionalPlayer.get();
+			profile.setFantasyId2017(oldPlayer.getPlayerProfile().getFantasyId2017());
+			oldPlayer.setPlayerProfile(profile);
+		}
+		else this.addPlayer(profile);
 	}
 	
 	public void updateHistorySeasons(int code, List<HistorySeason> historySeasons) {
@@ -110,7 +108,7 @@ public class PlayerService {
 		performances.stream().forEach(x -> this.completeFixtureData(x, "2018/19"));
 		performances.stream()
 			.filter(x -> this.performanceExists(existingPerformances, x))
-			.forEach(x -> x.setPredictions(this.getPerformanceByPlayerAndRound(player, x.getRound()).getPredictions()));
+			.forEach(x -> x.setPredictions(this.getCurrentPerformanceByPlayerAndFixtureCode(player, x.getFixture().getCode()).getPredictions()));
 		performances.addAll(futurePerformances);
 		player.setPerformances(performances);
 	}
@@ -130,22 +128,32 @@ public class PlayerService {
 	}
 	
 	public void makePredictions(Player player, int number, AbstractPredictionMethod method) throws Exception {
-
-		List<Prediction> predictions = predictionService.makePredictions(player, number, method);
 		
+		List<Prediction> predictions = predictionService.makePredictions(player, number, method);
 		for (Prediction prediction : predictions) {
-			Performance performance = this.getPerformanceByPlayerAndRound(player, prediction.getRound());
-			
-			if (
-					null == performance.getLatestPredictionByMethod(prediction.getPredictionMethodName())
-					|| 0 != performance.getLatestPredictionByMethod(prediction.getPredictionMethodName()).getPredictedPoints().compareTo(prediction.getPredictedPoints()) 
-				) 
-			{
-				performance.addPrediction(prediction);
-			}
-
+			System.out.println(player.getPlayerProfile().getLastName() + prediction.getFixtureCode());
+			FullPerformance performance = this.getCurrentPerformanceByPlayerAndFixtureCode(player, prediction.getFixtureCode());
+			if (null == performance) performance = this.createNewPerformance(player, prediction.getFixtureCode());
+			if ((!this.predictionExists(player, prediction)))
+				{
+					performance.addPrediction(prediction);
+				}
 		}
 		this.savePlayer(player);
+		}
+
+	
+	
+	
+	public void makePredictionsForAllPlayers(int numberOfGames, AbstractPredictionMethod method) {
+    	for (Player player : this.getPlayers()) {
+    		try {
+    			this.makePredictions(player, 10, method);
+    		}
+    		catch (Exception e) {
+    			e.printStackTrace();
+    		}
+    	}
 	}
 	
 	/**
@@ -155,43 +163,45 @@ public class PlayerService {
 	 */
 	
 	public void addPredictionToPlayerPerformance(Prediction prediction, Player player, Fixture fixture) {
-		player.getPerformances()
+		Optional <FullPerformance> optionalPerformance = player.getPerformances()
 			  .stream()
 			  .filter(x -> x.getRound() == fixture.getEvent())
-			  .findFirst()
-			  .ifPresentOrElse(
-					  x -> {if (!this.predictionExists(player, prediction)) x.addPrediction(prediction);},
-					  () -> {
-						  FullPerformance performance = new FullPerformance();
-						  performance.setFixture(fixture);
-						  performance.setRound(fixture.getEvent());
-						  performance.addPrediction(prediction);
-						  player.getPerformances().add(performance);
-					  }	  		
-		);
-	}
-	
-	
-	public FullPerformance getPerformanceByPlayerAndRound(Player player, int round) {
-		List<FullPerformance> performances = this.getPlayers().stream().filter(x -> x.equals(player)).findFirst().get().getPerformances().stream().filter(y -> y.getRound() == round).collect(Collectors.toList());
-		if (performances.size() == 0) {
-			FullPerformance performance = new FullPerformance();
-			performance.setRound(round);
-			performance.setFixture(fixtureService.getFixturesForTeam(player.getPlayerProfile().getTeam()).stream().filter(x -> x.getEvent() == round).findFirst().get());
-			player.getPerformances().add(performance);
-			this.savePlayer(player);
-			return performance;
+			  .findFirst();
+		if (optionalPerformance.isPresent() && !this.predictionExists(player, prediction)) {
+			optionalPerformance.get().addPrediction(prediction);
 		}
-		else if (performances.size() == 1) {
-			return performances.get(0);
-		}
-		
 		else {
-			throw new NoSuchElementException("Multiple performances - db problem");
-		}
+			  FullPerformance performance = new FullPerformance();
+			  performance.setFixture(fixture);
+			  performance.setRound(fixture.getEvent());
+			  performance.addPrediction(prediction);
+			  player.getPerformances().add(performance);
+		}	  		
 	}
 	
-	public Performance getPastPerformanceByPlayerRoundAndSeason(Player player, int round, String season) {
+	
+	public FullPerformance createNewPerformance (Player player, int fixtureCode) {
+			Fixture fixture = fixtureService.getFixtureByCode(fixtureCode);
+			FullPerformance performance = new FullPerformance();
+			performance.setFixture(fixture);
+			performance.setRound(fixture.getEvent());
+			player.getPerformances().add(performance);
+			return performance;
+	}
+	
+	public List<FullPerformance> getPerformancesByPlayerAndRound(Player player, int round) {
+		return this.getPlayers()
+				     .stream()
+				     .filter(x -> x.equals(player))
+				     .findFirst()
+				     .get()
+				     .getPerformances()
+				     .stream()
+				     .filter(y -> y.getRound() == round)
+				     .collect(Collectors.toList());
+	}
+	
+	public List<Performance> getPastPerformancesByPlayerRoundAndSeason(Player player, int round, String season) {
 		
 		return this.getPlayers().stream()
 								  .filter(x -> x.equals(player))
@@ -205,8 +215,7 @@ public class PlayerService {
 								  .getHistoryPerformances()
 								  .stream()
 								  .filter(y -> y.getRound() == round)
-								  .findFirst()
-								  .get();
+								  .collect(Collectors.toList());
 		}
 	
 	public Player getPlayerByCode(int code) {
@@ -236,12 +245,18 @@ public class PlayerService {
 	}
 	
 	public Boolean predictionExists(Player player, Prediction prediction) {
-		return this.getPerformanceByPlayerAndRound(player, prediction.getRound())
-			.getPredictions()
-			.stream()
-			.filter(x -> x.getPredictedPoints().equals(prediction.getPredictedPoints()) && x.getPredictionMethodName().equalsIgnoreCase(prediction.getPredictionMethodName()))
-			.findFirst()
-			.isPresent();
+		for (FullPerformance performance : getPerformancesByPlayerAndRound(player, prediction.getRound())) {
+			if (performance
+				.getPredictions()
+				.stream()
+				.filter(x ->x.getFixtureCode() == prediction.getFixtureCode() &&
+							x.getPredictedPoints().equals(prediction.getPredictedPoints()) && 
+							x.getPredictionMethodName().equalsIgnoreCase(prediction.getPredictionMethodName())
+						)
+				.findFirst()
+				.isPresent()) return true;
+		}
+		return false;
 	}
 	
 	public Boolean isPlayerInFixture(Player player, Fixture fixture) {
@@ -254,7 +269,9 @@ public class PlayerService {
 		int currentEvent = fantasyStatus.getCurrentEvent();
 		for (int i = 1; i <= noOfGames; i++) {
 			if (currentEvent + i > 38) break;
-			points += this.getPerformanceByPlayerAndRound(player, currentEvent + i).getAveragePrediction();
+			for (FullPerformance performanceInRound : this.getPerformancesByPlayerAndRound(player, currentEvent + i)) {
+				points += performanceInRound.getAveragePrediction();
+			}
 		}
 		return points;
 	}
@@ -264,9 +281,17 @@ public class PlayerService {
 		int currentEvent = fantasyStatus.getCurrentEvent();
 		for (int i = 1; i <= noOfGames; i++) {
 			if (currentEvent + i > 38) break;
-			points += this.getPerformanceByPlayerAndRound(player, currentEvent + i).getLatestPredictionByMethod(method).getPredictedPoints();
+			for (FullPerformance performanceInRound : this.getPerformancesByPlayerAndRound(player, currentEvent + i)) {
+				points += performanceInRound.getLatestPredictionByMethod(method).getPredictedPoints();
+			}
 		}
 		return points;
+	}
+	
+	public FullPerformance getCurrentPerformanceByPlayerAndFixtureCode(Player player, int fixtureCode) {
+		Optional<FullPerformance> optionalPerformance = player.getPerformances().stream().filter(x -> fixtureCode == x.getFixture().getCode()).findFirst();
+		if (optionalPerformance.isPresent()) return optionalPerformance.get();
+		else return null;
 	}
 }
 	

@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +14,7 @@ import org.springframework.data.mongodb.repository.config.EnableMongoRepositorie
 import org.springframework.stereotype.Service;
 import org.springframework.util.comparator.Comparators;
 
+import com.twojnar.fantasy.common.ApplicationException;
 import com.twojnar.fantasy.common.FantasyStatus;
 import com.twojnar.fantasy.player.Player;
 import com.twojnar.fantasy.team.Team;
@@ -126,5 +128,30 @@ public class FixtureService {
 	public Boolean isHome(Fixture fixture, Team team) {
 		return fixture.getHomeTeam().equals(team);
 	}
-
+	
+	public Fixture getFixtureByCode(int fixtureCode) {
+		Optional <Fixture> optionalFixture = this.getFixtures().stream().filter(x -> x.getCode() == fixtureCode).findFirst();
+		if (optionalFixture.isPresent()) return optionalFixture.get();
+		else return null;
+	}
+	
+	public int getHomeTeamAdvantageByPosition(Fixture fixture, int position) {
+	
+		Team homeTeam = fixture.getHomeTeam();
+		Team awayTeam = fixture.getAwayTeam();
+		switch (position) {
+			case 1:
+			case 2:
+				return homeTeam.getStrength_defence_home() - awayTeam.getStrength_attack_away();
+			case 3:
+				return
+					homeTeam.getStrength_defence_home() +
+					homeTeam.getStrength_attack_home() -
+					awayTeam.getStrength_defence_away() -
+					awayTeam.getStrength_defence_away();
+			case 4:
+				return homeTeam.getStrength_attack_home() - awayTeam.getStrength_defence_away();
+			default: throw new ApplicationException("Position does not exist");
+		}
+	}
 }

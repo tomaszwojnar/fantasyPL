@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,15 +49,14 @@ public class EventService {
 	
 	public void updateEvents(List<Event> updatedEvents) {
 		for (Event updatedEvent : updatedEvents) {
-			this.events.stream()
-				.filter(e -> e.equals(updatedEvent)).findFirst().ifPresentOrElse(
-					x -> {
-						updatedEvent.setId(x.getId());
-						this.events.remove(x);
-						this.events.add(updatedEvent);
-					},
-					() -> this.events.add(updatedEvent)
-				);
+			Optional <Event> optionalEvent = this.events.stream().filter(e ->  e.equals(updatedEvent)).findFirst();
+				if (optionalEvent.isPresent()) {
+					Event event = optionalEvent.get();
+					updatedEvent.setId(event.getId());
+					this.events.remove(event);
+					this.events.add(updatedEvent);
+				}
+				else this.events.add(updatedEvent);
 		}
 	}
 	

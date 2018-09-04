@@ -129,7 +129,7 @@ public class StatsTests {
 	}
 
 	
-	public void setOverallPointsCorrelationAggregate() {
+	/*public void setOverallPointsCorrelationAggregate() {
 		
         PearsonsCorrelation pc = new PearsonsCorrelation();
 		playerService.getPlayers()
@@ -148,7 +148,8 @@ public class StatsTests {
 				});
 			});
 			if (x.getAggregates() == null) x.setAggregates(new ArrayList<PlayerAggregates>());
-			else {x.getAggregates()
+			else {
+				x.getAggregates()
 				.stream()
 				.filter(y -> y.getSeason().equals("2017/18"))
 				.findFirst()
@@ -166,10 +167,10 @@ public class StatsTests {
 
 		}
 			playerService.savePlayer(x);});
-	}
+	}*/
 	
 	
-	public void setOverallPointsCorrelationAggregateFromSimilar() {
+	/*public void setOverallPointsCorrelationAggregateFromSimilar() {
 		
         PearsonsCorrelation pc = new PearsonsCorrelation();
 		playerService.getPlayers()
@@ -218,9 +219,9 @@ public class StatsTests {
 			playerService.savePlayer(x);
 			});
 		});
-	}
+	}*/
 	
-	public void setAttackDefencePointsCorrelationAggregate() {
+	/*public void setAttackDefencePointsCorrelationAggregate() {
 		
         PearsonsCorrelation pc = new PearsonsCorrelation();
 		playerService.getPlayers()
@@ -300,7 +301,7 @@ public class StatsTests {
 
 		}
 			playerService.savePlayer(x);});
-	}
+	}*/
 	
 
 }

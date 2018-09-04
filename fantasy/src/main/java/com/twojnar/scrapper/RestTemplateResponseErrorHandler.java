@@ -26,12 +26,12 @@ public class RestTemplateResponseErrorHandler
  
         if (httpResponse.getStatusCode()
           .series() == HttpStatus.Series.SERVER_ERROR) {
-            System.out.println(httpResponse.getBody().readAllBytes().toString());
+            System.out.println(httpResponse.getBody());
         } else if (httpResponse.getStatusCode()
           .series() == HttpStatus.Series.CLIENT_ERROR) {
-        	System.out.println(httpResponse.getBody().readAllBytes().toString());
+        	System.out.println(httpResponse.getBody());
             if (httpResponse.getStatusCode() == HttpStatus.NOT_FOUND) {
-            	System.out.println(httpResponse.getBody().readAllBytes().toString());
+            	System.out.println(httpResponse.getBody());
             }
         }
     }

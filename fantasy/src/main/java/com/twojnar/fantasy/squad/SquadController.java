@@ -28,7 +28,7 @@ public class SquadController{
 	@Autowired
 	SquadService squadService;
 	
-	@RequestMapping(value = "/squad/{squad_id}", method = RequestMethod.GET)
+	@RequestMapping(value = "/api/squad/{squad_id}", method = RequestMethod.GET)
 	@JsonView(View.Public.class)
 	public ResponseEntity squad(@PathVariable("squad_id") int squadId) throws JSONException, JsonParseException, JsonMappingException, IOException {
 			try {
@@ -39,7 +39,7 @@ public class SquadController{
 			}
 	}
 	
-	@RequestMapping(value = "/squad/{squad_id}/lineups/{event_id}", method = RequestMethod.GET)
+	@RequestMapping(value = "/api/squad/{squad_id}/lineups/{event_id}", method = RequestMethod.GET)
 	@JsonView(View.Public.class)
 	public ResponseEntity lineup(@PathVariable("squad_id") int squadId, @PathVariable("event_id") int eventId) throws JSONException, JsonParseException, JsonMappingException, IOException {
 			try {
@@ -53,7 +53,7 @@ public class SquadController{
 			}
 	}
 	
-	@RequestMapping(value = "/squad/{squad_id}/advice", method = RequestMethod.GET)
+	@RequestMapping(value = "/api/squad/{squad_id}/advice", method = RequestMethod.GET)
 	@JsonView(View.Public.class)
 	public ResponseEntity lineup(@PathVariable("squad_id") int squadId, @RequestParam(value = "method", required = false) String method) throws JSONException, JsonParseException, JsonMappingException, IOException {
 			try {

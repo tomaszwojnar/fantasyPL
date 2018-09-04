@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,7 +61,7 @@ public class SquadService {
 			List<Lineup> lineups  =  (List<Lineup>) scrapper.scrapAll("https://fantasy.premierleague.com/drf/entry/" + id +"/event/" + i +"/picks", new Lineup());
 			Lineup lineup = lineups.get(0);
 			for (Pick pick : lineup.getPicks()) {
-				pick.setPerformance(playerService.getPerformanceByPlayerAndRound(
+				pick.setPerformances(playerService.getPerformancesByPlayerAndRound(
 						playerService.getPlayerByFantasyIdAndSeason(pick.getPlayerProfile().getFantasyId2018(), "2018/19"), i));
 			}
 			lineup.setEvent(lineup.getEntryHistory().getEvent());
@@ -85,7 +86,7 @@ public class SquadService {
 			List<Lineup> lineups  =  (List<Lineup>) scrapper.scrapAll("https://fantasy.premierleague.com/drf/entry/" + id +"/event/" + i +"/picks", new Lineup());
 			Lineup lineup = lineups.get(0);
 			for (Pick pick : lineup.getPicks()) {
-				pick.setPerformance(playerService.getPerformanceByPlayerAndRound(
+				pick.setPerformances(playerService.getPerformancesByPlayerAndRound(
 						playerService.getPlayerByFantasyIdAndSeason(pick.getPlayerProfile().getFantasyId2018(), "2018/19"), i));
 			}
 			lineup.setEvent(lineup.getEntryHistory().getEvent());
@@ -113,9 +114,14 @@ public class SquadService {
 	}
 	
 	public void addLineup(Squad squad, Lineup lineup) {
-		squad.getLineups().stream().filter(line -> line.equals(lineup)).findFirst().ifPresentOrElse(
-				line -> {squad.getLineups().remove(line); squad.getLineups().add(lineup);},
-				() -> squad.getLineups().add(lineup));
+		Optional <Lineup> optionalLineup = squad.getLineups().stream().filter(line -> line.equals(lineup)).findFirst();
+		if (optionalLineup.isPresent()) {
+			squad.getLineups().remove(optionalLineup.get());
+			squad.getLineups().add(lineup);
+		}
+		else {
+			squad.getLineups().add(lineup);
+		}
 	}
 	
 	public void saveSquadToDB(Squad squad) {

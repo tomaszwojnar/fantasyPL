@@ -53,6 +53,7 @@ public class PlayerUpdateDefinition extends TaskDefinition {
 	public void updateProfiles() throws IOException {
 		List<PlayerProfile> playerProfiles = (List<PlayerProfile>) scrapper.scrapAll("https://fantasy.premierleague.com/drf/elements", new PlayerProfile());
 		playerProfiles.stream().forEach(x -> {
+			x.setTeam(teamService.getTeamByFantasyId2018(x.getTeam().getFantasyId2018()));
 			playerService.updateProfile(x);
 			Player player = playerService.getPlayerByCode(x.getCode());
 			Fixture nextFixture = fixtureService.getNextFixturesForTeam(x.getTeam(), 1, fantasyStatus.getCurrentSeason()).get(0);

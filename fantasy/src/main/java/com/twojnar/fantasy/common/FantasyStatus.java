@@ -7,6 +7,7 @@ import java.util.Locale;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 
@@ -26,6 +27,7 @@ public class FantasyStatus {
 	
 	private Boolean dataChecked;
 	
+	@Value("${currentSeason}")
 	private String currentSeason;
 	
 
@@ -41,7 +43,6 @@ public class FantasyStatus {
 		this.finished = Boolean.parseBoolean(response.getJSONArray("events").getJSONObject(this.currentEvent-1).getString("finished"));
 		this.dataChecked = Boolean.parseBoolean(response.getJSONArray("events").getJSONObject(this.currentEvent-1).getString("data_checked"));
 		this.currentSeason = "2018/19";
-		
 	}
 
 	public Date getCurrentDeadline() {
