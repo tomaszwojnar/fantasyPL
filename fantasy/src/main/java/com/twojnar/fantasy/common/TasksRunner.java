@@ -71,11 +71,11 @@ public class TasksRunner implements Runnable {
 	public void run() {
 		try {
 		fantasyStatus.updateStatus();
-		//teamUpdateDefinition.updateTeams();
-		//fixtureUpdateDefinition.updateFixtures();
-		//fixtureUpdateDefinition.updateEvents();
-		//playerUpdateDefinition.updateProfiles();
-		//playerUpdateDefinition.updatePerformances();
+		teamUpdateDefinition.updateTeams();
+		fixtureUpdateDefinition.updateFixtures();
+		fixtureUpdateDefinition.updateEvents();
+		playerUpdateDefinition.updateProfiles();
+		playerUpdateDefinition.updatePerformances();
 		playerService.makePredictionsForAllPlayers(10, previousGames);
 		}
 		catch (Exception e) {

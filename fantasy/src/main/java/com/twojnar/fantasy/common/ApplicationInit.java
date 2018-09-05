@@ -53,7 +53,7 @@ public class ApplicationInit {
     	eventService.updateFromDB();
     	playerService.updateFromDB();
     	
-    	taskRunner.run();
+    	//taskRunner.run();
 	}
 
 }
