@@ -9,29 +9,37 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.twojnar.fantasy.common.View;
+import com.twojnar.fantasy.common.View.PublicGeneral;
 import com.twojnar.fantasy.team.Team;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-@JsonView(View.PublicGeneral.class)
+@JsonView(View.PublicDetails.class)
 public class PlayerProfile {
 	
+	@JsonView(View.PublicGeneral.class)
 	@JsonProperty("id")
 	private int fantasyId2018;
 	
+	@JsonView(View.PublicGeneral.class)
 	@JsonIgnore
 	private int fantasyId2017;
 	
+	@JsonView(View.PublicGeneral.class)
 	@JsonProperty("first_name")
 	private String firstName;
 	
+	@JsonView(View.PublicGeneral.class)
 	@JsonProperty("second_name")
 	private String lastName;
 	
+	@JsonView(View.PublicGeneral.class)
 	private String photo;
 	
+	@JsonView(View.PublicGeneral.class)
 	@JsonProperty("team")
 	private Team team;
 	
+	@JsonView(View.PublicGeneral.class)
 	private int code;
 	
 	@JsonProperty("now_cost")
@@ -172,6 +180,7 @@ public class PlayerProfile {
 	@JsonProperty("ea_index")
 	private float eaIndex;
 	
+	@JsonView(View.PublicGeneral.class)
 	@JsonProperty("element_type")
 	private int position;
 	

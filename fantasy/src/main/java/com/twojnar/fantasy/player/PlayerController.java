@@ -1,5 +1,6 @@
 package com.twojnar.fantasy.player;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -30,7 +31,7 @@ public class PlayerController {
 	@Autowired
 	FantasyStatus fantasyStatus;
 	
-	@JsonView(View.PublicGeneral.class)
+	@JsonView(View.PublicDetails.class)
 	@RequestMapping(value = "/api/players/{player_id}/predictions/{event_id}", method = RequestMethod.GET)
 	@ResponseBody
 	public ResponseEntity getPrediction(@PathVariable int player_id, @PathVariable int event_id) throws JSONException {
@@ -51,6 +52,7 @@ public class PlayerController {
 				);
 	}
 	
+	@JsonView(View.PublicDetails.class)
 	@RequestMapping(value = "/api/players/{player_id}", method = RequestMethod.GET)
 	@ResponseBody
 	public ResponseEntity getPlayer(@PathVariable int player_id) throws JSONException {
@@ -74,21 +76,20 @@ public class PlayerController {
 		if (!playerPosition.isPresent() && !lastName.isPresent() && !team.isPresent()) {
 			return ResponseEntity.badRequest().body("Either playerPosition or lastName or team Query Parameter is required");
 		}
-		List<Player> players = playerService.getPlayers();
+		List<PlayerProfile> playerProfiles = playerService.getPlayers().stream().map(x -> x.getPlayerProfile()).collect(Collectors.toList());
 		if (playerPosition.isPresent()) {
-			players = players.stream().filter(x -> playerPosition.get() == x.getPlayerProfile().getPosition()).collect(Collectors.toList());
+			playerProfiles.removeAll(playerProfiles.stream().filter(x -> x.getPosition() != playerPosition.get()).collect(Collectors.toList()));
 		}
 		if (lastName.isPresent()) {
-			players = players.stream().filter(x -> lastName.get().equals(x.getPlayerProfile().getLastName())).collect(Collectors.toList());
+			playerProfiles.removeAll(playerProfiles.stream().filter(x -> !lastName.get().equalsIgnoreCase(x.getLastName())).collect(Collectors.toList()));
 		}
 		if (team.isPresent()) {
-			players = players.stream().filter(x -> team.get().equalsIgnoreCase(x.getPlayerProfile().getTeam().getName())).collect(Collectors.toList());
+			playerProfiles.removeAll(playerProfiles.stream().filter(x -> !team.get().equalsIgnoreCase(x.getTeam().getName())).collect(Collectors.toList()));
 		}
-		return ResponseEntity.ok(players);
-
+		return ResponseEntity.ok(playerProfiles);
 	}
 	
-	
+	@JsonView(View.PublicGeneral.class)
 	@RequestMapping(value = "/api/players/{player_id}/performances/{event_id}", method = RequestMethod.GET)
 	@ResponseBody
 	public ResponseEntity getPerformance(@PathVariable int player_id, @PathVariable int event_id) throws JSONException {

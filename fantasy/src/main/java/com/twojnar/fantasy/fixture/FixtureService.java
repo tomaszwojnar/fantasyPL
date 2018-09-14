@@ -178,6 +178,16 @@ public class FixtureService {
 	}
 	
 	
+	/**
+	 * 
+	 * Method returns the difference between the strength of the opposing lines. Defence strength vs attack strength is considered for GKs, DEFs and ATT. All stats are considered for midfielders.
+	 * 
+	 * @param fixture Fixture to be considered
+	 * @param position int specifying the position to be considered
+	 * @return int home team advantage for the position
+	 * @throws ApplicationException if position does not exist
+	 */
+	
 	
 	public int getHomeTeamAdvantageByPosition(Fixture fixture, int position) {
 		Team homeTeam = fixture.getHomeTeam();

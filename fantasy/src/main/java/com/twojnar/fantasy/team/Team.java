@@ -25,8 +25,9 @@ public class Team implements Serializable {
 	
 	private String name;
 	
-	@JsonProperty("code")
+	@JsonProperty("team_code")
 	private int code;
+	
 	private String short_name;
 	private Boolean unavailable;
 	private int strength;
@@ -50,9 +51,9 @@ public class Team implements Serializable {
     	super();
     }
     
-    public Team (int code) {
+    public Team (int fantasyId) {
     	super();
-    	this.code = code;
+    	this.fantasyId2018 = fantasyId;
     }
     
     @JsonIgnore

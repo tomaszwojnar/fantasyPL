@@ -18,7 +18,6 @@ import org.springframework.context.annotation.ComponentScan;
 @ComponentScan("com.twojnar.batcher")
 @ComponentScan("com.twojnar.taskRunner")
 @EnableCaching
-
 public class FantasyApplication implements CommandLineRunner {
 	
 

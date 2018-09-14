@@ -193,7 +193,7 @@ public class Fixture {
 		if (getClass() != obj.getClass())
 			return false;
 		Fixture other = (Fixture) obj;
-		if (fantasyId != other.fantasyId)
+		if (fantasyId != other.fantasyId || !season.equalsIgnoreCase(other.season))
 			return false;
 		return true;
 	}

@@ -12,7 +12,6 @@ import com.twojnar.fantasy.player.FullPerformance;
 import com.twojnar.fantasy.player.HistorySeason;
 import com.twojnar.fantasy.player.Player;
 import com.twojnar.fantasy.player.PlayerService;
-import com.twojnar.fantasy.player.SimplifiedPerformance;
 import com.twojnar.fantasy.team.Team;
 import com.twojnar.fantasy.team.TeamService;
 
@@ -20,16 +19,11 @@ import java.io.IOException;
 import java.io.Reader;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+
 import java.time.Instant;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
 import java.util.NoSuchElementException;
-import java.util.Optional;
+
 
 @Component
 public class CSVReaderWithHeaderAutoDetection {

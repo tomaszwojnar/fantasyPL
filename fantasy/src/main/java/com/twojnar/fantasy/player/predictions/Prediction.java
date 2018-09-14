@@ -1,13 +1,14 @@
 package com.twojnar.fantasy.player.predictions;
 
 import java.util.Date;
+
 import java.util.Map;
 
-import org.springframework.data.annotation.Transient;
+import com.fasterxml.jackson.annotation.JsonView;
+import com.twojnar.fantasy.common.View;
 
-import com.twojnar.fantasy.fixture.Fixture;
-import com.twojnar.fantasy.player.Player;
 
+@JsonView(View.PublicGeneral.class)
 public class Prediction {
 	
 	private Date datePredictionMade;

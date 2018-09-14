@@ -1,6 +1,5 @@
 package com.twojnar.fantasy;
 
-import static org.junit.Assert.*;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -14,16 +13,12 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 
 import com.twojnar.fantasy.common.ApplicationException;
 import com.twojnar.fantasy.common.FantasyStatus;
 import com.twojnar.fantasy.fixture.Fixture;
 import com.twojnar.fantasy.fixture.FixtureService;
 import com.twojnar.fantasy.player.FullPerformance;
-import com.twojnar.fantasy.player.Performance;
 import com.twojnar.fantasy.player.Player;
 import com.twojnar.fantasy.player.PlayerProfile;
 import com.twojnar.fantasy.player.PlayerService;
@@ -31,7 +26,6 @@ import com.twojnar.fantasy.player.predictions.PreviousGamesAttackDefence;
 import com.twojnar.fantasy.team.Team;
 import com.twojnar.fantasy.team.TeamService;
 
-import org.apache.commons.math3.stat.regression.SimpleRegression;
 import org.junit.Assert;
 
 @RunWith(MockitoJUnitRunner.class)

@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import com.twojnar.fantasy.common.ApplicationException;
 import com.twojnar.fantasy.common.FantasyStatus;
+import com.twojnar.fantasy.common.ListUtil;
 import com.twojnar.fantasy.fixture.Fixture;
 import com.twojnar.fantasy.fixture.FixtureService;
 import com.twojnar.fantasy.player.predictions.AbstractPredictionMethod;
@@ -42,6 +43,14 @@ public class PlayerService {
 	private FantasyStatus fantasyStatus;
 	
 	List<Player> players = new ArrayList<Player>();
+	
+	public List<Player> getPlayers() {
+		return players;
+	}
+
+	public void setPlayers(List<Player> players) {
+		this.players = players;
+	}
 	
 	/**
 	 * Updates the players Array using the db connection
@@ -88,43 +97,58 @@ public class PlayerService {
 		playerRepository.saveAll(this.players);
 	}
 	
+	
+	/**
+	 * Updates database record for the player provided.
+	 * @param player
+	 * @return void
+	 */
+	
 	public void savePlayer(Player player) {
 		playerRepository.save(player);
 	}
 	
+	/**
+	 * Updates the playerProfile for the Player matched using the playerCode. DOES NOT persist the player record.
+	 * @param updatedplayerProfile
+	 * @throws ApplicationException when multiple players with the same code exist
+	 * @return void
+	 */
+	
 	public void updateProfile(PlayerProfile profile) {
-		Optional<Player> optionalPlayer = this.players.stream()
-				.filter(e -> e.getPlayerProfile().getCode() == profile.getCode()).findFirst();
-		if (optionalPlayer.isPresent()) {
-			Player oldPlayer = optionalPlayer.get();
+		try {
+			Player oldPlayer =	ListUtil.getSingleFromList(this.players.stream()
+				.filter(e -> e.getPlayerProfile().getCode() == profile.getCode()).collect(Collectors.toList()));
 			profile.setFantasyId2017(oldPlayer.getPlayerProfile().getFantasyId2017());
 			oldPlayer.setPlayerProfile(profile);
 		}
-		else this.addPlayer(profile);
+		catch (NoSuchElementException e) {
+			this.addPlayer(profile);
+		}
 	}
 	
+	/**
+	 * Updates the historySeasons for the Player matched using the playerCode. DOES NOT persist the player record.
+	 * @param int playerCode
+	 * @param historySeasons array
+	 * @throws ApplicationException when multiple players with the same code exist
+	 * @throws NoSuchElementException when player cannot be found using the code
+	 * @return void
+	 */
 	
 	
 	public void updateHistorySeasons(int code, List<HistorySeason> historySeasons) {
-		/*this.players.stream()
-		.filter(e -> e.getPlayerProfile().getCode() == code)
-		.findFirst()
-		.ifPresent(x -> {
-			historySeasons.stream()
-						  .filter(y -> y.getSeasonName().equalsIgnoreCase("2017/18"))
-						  .findFirst()
-						  .ifPresent(y -> y.setTeam(x.getHistorySeasons()
-								  .stream()
-								  .filter(z -> z.getSeasonName().equalsIgnoreCase("2017/18"))
-								  .findFirst()
-								  .get().getTeam()
-								  ));*/
-		
-		this.players.stream()
-		.filter(e -> e.getPlayerProfile().getCode() == code).findFirst().ifPresent(x -> {
-			x.setHistorySeasons(historySeasons);
-		});
+		ListUtil.getSingleFromList(this.players.stream()
+			.filter(e -> e.getPlayerProfile().getCode() == code).collect(Collectors.toList())).setHistorySeasons(historySeasons);
 	}
+	
+	/**
+	 * Updates the list of performances for the Player matched using the playerCode. The method completes the fixture from the FantasyPL format (id only). DOES NOT persist the performance records.
+	 * @param int playerCode
+	 * @param List<FullPerformance> performances
+	 * @param bool retain existing predictions when updating performances
+	 * @return void
+	 */
 	
 	public void updatePerformances(int playerCode, List<FullPerformance> performances, Boolean retainExistingPredictions) {
 		Player player = this.getPlayerByCode(playerCode);
@@ -138,21 +162,26 @@ public class PlayerService {
 		player.setPerformances(performances);
 	}
 	
-	public List<Player> getPlayers() {
-		return players;
-	}
-
-	public void setPlayers(List<Player> players) {
-		this.players = players;
-	}
-	
-
+	/**
+	 * Completes the fixture data from fantasyId provided by FantasyPL website.
+	 * @param FullPerformance performance
+	 * @param String season in the "2018/19" format
+	 * @return void
+	 */
 	
 	public void completeFixtureData(FullPerformance fullPerformance, String season) {
 		fullPerformance.setFixture(fixtureService.getFixtureByFantasyIdAndSeason(fullPerformance.getFixture().getFantasyId(), season));
 	}
 	
-	public void makePredictions(Player player, int number, AbstractPredictionMethod method) throws Exception {
+	/**
+	 * Makes predictions for a given, player, number of games and prediction method.
+	 * @param Player player
+	 * @param int number of future games for which the predictions need to be made
+	 * @param AbstractPredictionMethod - the method to be used for prediction
+	 * @return void
+	 */
+	
+	public void makePredictions(Player player, int number, AbstractPredictionMethod method) {
 		
 		List<Prediction> predictions = predictionService.makePredictions(player, number, method);
 		for (Prediction prediction : predictions) {
@@ -215,7 +244,7 @@ public class PlayerService {
 		return performances;
 	}
 	
-	public List<Performance> getPastPerformancesByPlayerRoundAndSeason(Player player, int round, String season) {
+	public List<FullPerformance> getPastPerformancesByPlayerRoundAndSeason(Player player, int round, String season) {
 		
 		return this.getPlayers().stream()
 								  .filter(x -> x.equals(player))
@@ -239,13 +268,12 @@ public class PlayerService {
 	public Player getPlayerByFantasyIdAndSeason(int id, String season) {
 			try {
 				switch (season) {
-			
 			case "2018/19" :
 				return this.getPlayers().stream().filter(x -> x.getPlayerProfile().getFantasyId2018() == id).findFirst().get();
 			case "2017/18" :
 				return this.getPlayers().stream().filter(x -> x.getPlayerProfile().getFantasyId2017() == id).findFirst().get();
 			default :
-				return null;
+				throw new ApplicationException("No data for season "+ season);
 			}
 			}
 			catch (NoSuchElementException e) {
@@ -254,12 +282,10 @@ public class PlayerService {
 	}
 	
 	public HistorySeason getHistorySeason(Player player, String season) {
-		Optional<HistorySeason> historySeason = player.getHistorySeasons().stream().filter(x -> x.getSeasonName().equalsIgnoreCase(season)).findFirst();
-		if (historySeason.isPresent()) return historySeason.get();
-		else return null;
+		return ListUtil.getSingleFromList(player.getHistorySeasons().stream().filter(x -> x.getSeasonName().equalsIgnoreCase(season)).collect(Collectors.toList()));
 	}
 	
-	public Boolean performanceExists(List<FullPerformance> haystack, Performance needle) {
+	public Boolean performanceExists(List<FullPerformance> haystack, FullPerformance needle) {
 		return haystack.stream().filter(x -> x.getRound() == needle.getRound()).findFirst().isPresent();
 	}
 	
