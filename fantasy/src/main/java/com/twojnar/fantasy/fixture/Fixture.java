@@ -48,6 +48,7 @@ public class Fixture {
      * Brzydki hack - nale¿y zmieniæ na klasê
      */
 	
+	@JsonView(View.PublicDetails.class)
 	@JsonProperty("stats")
 	private List<Map<String, Map<String, List<Map<String, Object>>>>> stats;
 	
