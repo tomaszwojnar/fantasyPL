@@ -93,9 +93,15 @@ public class PlayerController {
 	@RequestMapping(value = "/api/players/{player_id}/performances/{event_id}", method = RequestMethod.GET)
 	@ResponseBody
 	public ResponseEntity getPerformance(@PathVariable int player_id, @PathVariable int event_id) throws JSONException {
-		return ResponseEntity.ok(
+		
+		try{
+			return ResponseEntity.ok(
 				playerService.getPlayerByFantasyIdAndSeason(player_id, fantasyStatus.getCurrentSeason()).getPerformances().stream().filter(x -> x.getRound() == event_id).collect(Collectors.toList())
 				);
+		}
+		catch (ApplicationException e) {
+			return ResponseEntity.badRequest().body(e.getMessage());
+		}
 	}
 	
 	@RequestMapping(value = "/api/players/{player_id}/performances", method = RequestMethod.GET)
