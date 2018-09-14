@@ -1,0 +1,1 @@
+packageSearchIndex = [{"l":"com.twojnar.batcher"},{"l":"com.twojnar.fantasy.common"},{"l":"com.twojnar.fantasy.fixture"},{"l":"com.twojnar.fantasy.player"},{"l":"com.twojnar.fantasy.player.predictions"},{"l":"com.twojnar.fantasy.squad"},{"l":"com.twojnar.fantasy.team"},{"l":"com.twojnar.scrapper"},{"l":"com.twojnar.taskRunner"}]

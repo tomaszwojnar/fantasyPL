@@ -11,9 +11,7 @@ public abstract class AbstractPredictionMethod implements IPredictionMethod {
 
 	}
 	
-	public double makePrediction(Player player, Fixture fixture) {
-		return 0;
-	}
+	abstract public double makePrediction(Player player, Fixture fixture);
 	
 	private Map<String, Object> calculationDetails;
 

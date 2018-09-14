@@ -1,0 +1,1 @@
+{"options":{},"indexes":[{"v":2,"key":{"_id":1},"name":"_id_","ns":"fantasy.fixtures"},{"v":2,"unique":true,"key":{"code":1},"name":"FantasyCode","ns":"fantasy.fixtures"},{"v":2,"unique":true,"key":{"season":1,"fantasyId":1},"name":"Season and Id","ns":"fantasy.fixtures"}],"uuid":"cc2eb099de7f46639423bb7b35b7c847"}

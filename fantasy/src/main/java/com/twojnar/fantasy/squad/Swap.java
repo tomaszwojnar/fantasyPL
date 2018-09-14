@@ -7,9 +7,9 @@ import com.twojnar.fantasy.player.Player;
 import com.twojnar.fantasy.player.PlayerProfile;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-@JsonView(View.Public.class)
+@JsonView(View.PublicGeneral.class)
 public class Swap {
-	
+		
 		private PlayerProfile out;
 		private PlayerProfile in;
 		private long benefit;

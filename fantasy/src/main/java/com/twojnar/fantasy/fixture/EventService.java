@@ -9,12 +9,15 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 import org.springframework.stereotype.Service;
 import org.springframework.util.comparator.Comparators;
 
 import com.twojnar.fantasy.common.FantasyStatus;
+import com.twojnar.fantasy.common.ListUtil;
 import com.twojnar.fantasy.player.Player;
 import com.twojnar.fantasy.team.Team;
 import com.twojnar.fantasy.team.TeamService;
@@ -23,14 +26,10 @@ import com.twojnar.fantasy.team.TeamService;
 @Service
 public class EventService {
 	
+	static final Logger logger = LoggerFactory.getLogger(EventService.class);
+	
 	@Autowired
 	private EventRepository eventRepository;
-	
-	@Autowired
-	private FixtureService fixtureService;
-	
-	@Autowired
-	private TeamService teamService;
 	
 	@Autowired
 	private FantasyStatus fantasyStatus;
@@ -42,10 +41,19 @@ public class EventService {
 	public void updateFromDB() {
 		this.events = eventRepository.findAll();
 	}
-
+	
 	public void saveToDB() {
 		eventRepository.saveAll(this.events);
 	}
+	
+	/**
+	 * Method updates the list of existing events using the list of updatedEvents provided. If an event does not exist, it is created and added.
+	 * The method does not persist the data.
+	 * 
+	 * @param updatedEvents - List of events to be
+	 * @return void
+	 */
+	
 	
 	public void updateEvents(List<Event> updatedEvents) {
 		for (Event updatedEvent : updatedEvents) {
@@ -60,12 +68,19 @@ public class EventService {
 		}
 	}
 	
+	/**
+	 * Method clears the list of existing events, deletes the events in the repository, adds the events from the list and persists them.
+	 * 
+	 * @param updatedEvents - List of events to be
+	 * @return void
+	 */
+	
 	public void initialLoad(List<Event> events) {
 		this.events.clear();
+		eventRepository.deleteAll();
 		for (Event updatedEvent : events) {
 				this.events.add(updatedEvent);
 		};
-		eventRepository.deleteAll();
 		this.saveToDB();
 	}
 
@@ -73,8 +88,29 @@ public class EventService {
 		return this.events;
 	}
 	
-	public Event getFixtureByFantasyIdAndSeason(int id, String season) {
-		return this.events.stream()
-		.filter(e -> e.getFantasy_id() == id && e.getSeason().equalsIgnoreCase(season)).collect(Collectors.toList()).get(0);
+	/**
+	 * Method returns an event by FantasyId and Season.
+	 * 
+	 * @param id - fantasyId for the Event
+	 * @param seaons - season in "2018/19" format
+	 * @return void
+	 */
+	
+	public Event getEventByFantasyIdAndSeason(int id, String season) {
+		List<Event> events = this.events.stream()
+					.filter(e -> e.getFantasy_id() == id && e.getSeason().equalsIgnoreCase(season))
+					.collect(Collectors.toList());
+		return ListUtil.getSingleFromList(events);
+	}
+	
+	/**
+	 * Method returns an event in the current season by FantasyId.
+	 * 
+	 * @param updatedEvents - List of events to be
+	 * @return void
+	 */
+	
+	public Event getEventByFantasyId(int id) {
+		return this.getEventByFantasyIdAndSeason(id, fantasyStatus.getCurrentSeason());
 	}
 }

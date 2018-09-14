@@ -63,7 +63,6 @@ public class PreviousGamesAttackDefence extends AbstractPredictionMethod {
 		    	simpleRegression.addData(strengthDifference, playedPerformance.getTotalPoints());
 		    	}
 		    }
-	    System.out.println(fixtureStrengthDifference);
 	    double result = simpleRegression.predict(fixtureStrengthDifference);
 	    return result;
 	}

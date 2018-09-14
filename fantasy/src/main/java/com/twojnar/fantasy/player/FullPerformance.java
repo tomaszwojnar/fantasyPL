@@ -8,7 +8,7 @@ import com.twojnar.fantasy.common.View;
 import com.twojnar.fantasy.fixture.Fixture;
 import com.twojnar.fantasy.team.Team;
 
-@JsonView(View.Public.class)
+@JsonView(View.PublicGeneral.class)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class FullPerformance extends Performance {
 	

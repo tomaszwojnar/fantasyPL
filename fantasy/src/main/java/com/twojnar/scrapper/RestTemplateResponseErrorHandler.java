@@ -2,14 +2,19 @@ package com.twojnar.scrapper;
 
 import java.io.IOException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.ResponseErrorHandler;
 
+import com.twojnar.fantasy.common.FantasyStatus;
+
 @Component
-public class RestTemplateResponseErrorHandler 
-  implements ResponseErrorHandler {
+public class RestTemplateResponseErrorHandler implements ResponseErrorHandler {
+	
+	static final Logger logger = LoggerFactory.getLogger(FantasyStatus.class);
  
     @Override
     public boolean hasError(ClientHttpResponse httpResponse) 
@@ -23,16 +28,12 @@ public class RestTemplateResponseErrorHandler
     @Override
     public void handleError(ClientHttpResponse httpResponse) 
       throws IOException {
- 
         if (httpResponse.getStatusCode()
           .series() == HttpStatus.Series.SERVER_ERROR) {
-            System.out.println(httpResponse.getBody());
+            logger.error("Server responded with :" + httpResponse.getStatusCode() + httpResponse.getStatusText());
         } else if (httpResponse.getStatusCode()
           .series() == HttpStatus.Series.CLIENT_ERROR) {
-        	System.out.println(httpResponse.getBody());
-            if (httpResponse.getStatusCode() == HttpStatus.NOT_FOUND) {
-            	System.out.println(httpResponse.getBody());
-            }
+            logger.error("Server responded with :" + httpResponse.getStatusCode() + httpResponse.getStatusText());
         }
     }
 }

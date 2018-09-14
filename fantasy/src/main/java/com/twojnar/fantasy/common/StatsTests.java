@@ -1,40 +1,18 @@
 package com.twojnar.fantasy.common;
 
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.NoSuchElementException;
 
-import org.apache.commons.csv.CSVFormat;
-import org.apache.commons.csv.CSVPrinter;
-import org.apache.commons.math3.stat.correlation.Covariance;
-import org.apache.commons.math3.stat.correlation.PearsonsCorrelation;
-import org.apache.commons.math3.stat.correlation.SpearmansCorrelation;
-import org.apache.commons.math3.stat.regression.SimpleRegression;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import com.twojnar.fantasy.fixture.Fixture;
 import com.twojnar.fantasy.fixture.FixtureService;
-import com.twojnar.fantasy.player.FullPerformance;
-import com.twojnar.fantasy.player.HistorySeason;
-import com.twojnar.fantasy.player.Player;
-import com.twojnar.fantasy.player.PlayerAggregates;
 import com.twojnar.fantasy.player.PlayerService;
-import com.twojnar.fantasy.player.SimplifiedPerformance;
-import com.twojnar.fantasy.team.Team;
 import com.twojnar.fantasy.team.TeamService;
+import com.twojnar.taskRunner.TaskRunner;
 
 @Component
 public class StatsTests {
 	
 	@Autowired
-	TasksRunner taskRunner;
+	TaskRunner taskRunner;
 	
 	@Autowired
 	TeamService teamService;
@@ -45,7 +23,7 @@ public class StatsTests {
 	@Autowired
 	PlayerService playerService;
 	
-	public void run() throws IOException {
+	/*public void run() throws IOException {
 		
 		//this.setAttackDefencePointsCorrelationAggregate();
 		//this.setOverallPointsCorrelationAggregate();

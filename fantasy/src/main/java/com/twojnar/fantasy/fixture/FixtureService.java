@@ -16,6 +16,7 @@ import org.springframework.util.comparator.Comparators;
 
 import com.twojnar.fantasy.common.ApplicationException;
 import com.twojnar.fantasy.common.FantasyStatus;
+import com.twojnar.fantasy.common.ListUtil;
 import com.twojnar.fantasy.player.Player;
 import com.twojnar.fantasy.team.Team;
 import com.twojnar.fantasy.team.TeamService;
@@ -55,16 +56,33 @@ public class FixtureService {
 		fixtureRepository.saveAll(this.fixtures);
 	}
 	
+	/**
+	 * For each updatedFixture the method matches an existing fixture and replaces the existing with new. The method does not persist the fixture or complete team data.
+	 * 
+	 * @param updatedFixtures
+	 * @return void
+	 */
+	
+	
 	public void updateFixtures(List<Fixture> updatedFixtures) {
 		for (Fixture updatedFixture : updatedFixtures) {
-			this.fixtures.stream()
-				.filter(e -> e.equals(updatedFixture)).findFirst().ifPresent(x -> {
-					updatedFixture.setId(x.getId());
-					this.fixtures.remove(x);
-					this.fixtures.add(updatedFixture);
-				});
+			Fixture existingFixture = ListUtil.getSingleFromList(this.fixtures.stream()
+																		.filter(e -> e.equals(updatedFixture))
+																		.collect(Collectors.toList())
+																		);
+			updatedFixture.setId(existingFixture.getId());
+			this.fixtures.remove(existingFixture);
+			this.fixtures.add(updatedFixture);
 		}
 	}
+	
+	/**
+	 * The method completes the original team data (fantasyId only) with the full team data.
+	 * 
+	 * @throws NoSuchElementException
+	 * @param fixture
+	 * @return void
+	 */
 	
 	public void completeTeamInfo(Fixture fixture) {
 		switch (fixture.getSeason()) {
@@ -77,12 +95,19 @@ public class FixtureService {
 			fixture.setHomeTeam(teamService.getTeamByFantasyId2017(fixture.getHomeTeam().getFantasyId2017()));
 			break;
 		default :
-			throw new NoSuchElementException();
+			throw new NoSuchElementException("Data for season " + fixture.getSeason() + " was requested but none was found");
 		}
 	}
 	
+	/**
+	 * The method clears the list of fixtures, clears persisted fixtures, adds fixtures from the list and persists.
+	 * 
+	 * @param fixtures
+	 * @return void
+	 */
+	
+	
 	public void initialLoad(List<Fixture> fixtures) {
-		fixtureRepository.deleteAll();
 		this.fixtures.clear();
 		fixtureRepository.deleteAll();
 		for (Fixture updatedFixture : fixtures) {
@@ -95,9 +120,17 @@ public class FixtureService {
 		return this.fixtures;
 	}
 	
+	/**
+	 * Returns a fixture by fantasyId and season name in "2018/19" format.
+	 * @param id
+	 * @param season
+	 * @return
+	 */
+	
 	public Fixture getFixtureByFantasyIdAndSeason(int id, String season) {
-		return this.fixtures.stream()
-		.filter(e -> e.getFantasyId() == id && e.getSeason().equalsIgnoreCase(season)).collect(Collectors.toList()).get(0);
+		return ListUtil.getSingleFromList(this.fixtures.stream()
+						.filter(e -> e.getFantasyId() == id && e.getSeason().equalsIgnoreCase(season))
+						.collect(Collectors.toList()));
 	}
 	
 	/**
@@ -109,19 +142,28 @@ public class FixtureService {
 	
 	public List<Fixture> getFixturesForTeam(Team team) {
 		return this.fixtures.stream()
-		.filter(e ->
-			e.getAwayTeam().getFantasyId2018() == team.getFantasyId2018()
-			|| e.getHomeTeam().getFantasyId2018() == team.getFantasyId2018()).collect(Collectors.toList());
+				.filter(e ->
+					e.getAwayTeam().getCode() == team.getCode()
+					|| e.getHomeTeam().getCode() == team.getCode()).collect(Collectors.toList());
 	}
+	
+	/**
+	 * 
+	 * Method finds and returns the list of coming fixtures for a team.
+	 * 
+	 * @param team
+	 * @param number - number of games to be returned
+	 * @param season
+	 * @return list of coming fixtures for the team
+	 */
 	
 	public List<Fixture> getNextFixturesForTeam(Team team, int number, String season) {
 		
-		List<Fixture> list = this.getFixturesForTeam(team).stream()
+		return this.getFixturesForTeam(team).stream()
 									 .filter(x ->x.getEvent()>fantasyStatus.getCurrentEvent() && x.getSeason().equals(season))
 									 .sorted(Comparator.comparingInt(Fixture::getEvent))
 									 .limit(number)
 									 .collect(Collectors.toList());
-		return list;
 
 	}
 	
@@ -129,14 +171,15 @@ public class FixtureService {
 		return fixture.getHomeTeam().equals(team);
 	}
 	
+	
+	
 	public Fixture getFixtureByCode(int fixtureCode) {
-		Optional <Fixture> optionalFixture = this.getFixtures().stream().filter(x -> x.getCode() == fixtureCode).findFirst();
-		if (optionalFixture.isPresent()) return optionalFixture.get();
-		else return null;
+		return ListUtil.getSingleFromList(this.getFixtures().stream().filter(x -> x.getCode() == fixtureCode).collect(Collectors.toList()));
 	}
 	
-	public int getHomeTeamAdvantageByPosition(Fixture fixture, int position) {
 	
+	
+	public int getHomeTeamAdvantageByPosition(Fixture fixture, int position) {
 		Team homeTeam = fixture.getHomeTeam();
 		Team awayTeam = fixture.getAwayTeam();
 		switch (position) {
@@ -153,5 +196,9 @@ public class FixtureService {
 				return homeTeam.getStrength_attack_home() - awayTeam.getStrength_defence_away();
 			default: throw new ApplicationException("Position does not exist");
 		}
+	}
+	
+	public int getOverallHomeTeamAdvantage(Fixture fixture) {
+		return fixture.getHomeTeam().getStrength_overall_home() - fixture.getAwayTeam().getStrength_overall_home();
 	}
 }

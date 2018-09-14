@@ -17,7 +17,7 @@ import com.twojnar.fantasy.player.predictions.Prediction;
 
 @Document(collection = "squads")
 @JsonIgnoreProperties(ignoreUnknown = true)
-@JsonView(View.Public.class)
+@JsonView(View.PublicGeneral.class)
 public class Squad {
 	
 	@JsonIgnore
@@ -36,7 +36,7 @@ public class Squad {
 	
 	private int bank;
 
-	@JsonView(View.ExtendedPublic.class)
+	@JsonView(View.PublicDetails.class)
 	private List<Lineup> lineups;
 	
 	private int event_transfers;

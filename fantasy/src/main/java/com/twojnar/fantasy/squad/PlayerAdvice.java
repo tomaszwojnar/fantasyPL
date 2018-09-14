@@ -12,7 +12,7 @@ import com.twojnar.fantasy.common.View;
 
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-@JsonView(View.Public.class)
+@JsonView(View.PublicGeneral.class)
 public class PlayerAdvice implements IAdvice {
 	
 	private List<Swap> swaps = new ArrayList<Swap>();

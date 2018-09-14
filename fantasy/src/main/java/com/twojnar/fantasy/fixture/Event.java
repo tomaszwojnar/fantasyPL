@@ -2,6 +2,9 @@ package com.twojnar.fantasy.fixture;
 
 import java.util.Date;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
@@ -9,13 +12,13 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonView;
+import com.twojnar.fantasy.common.FantasyStatus;
 import com.twojnar.fantasy.common.View;
 
 @Document(collection = "events")
 @JsonIgnoreProperties(ignoreUnknown = true)
-@JsonView(View.Public.class)
+@JsonView(View.PublicGeneral.class)
 public class Event {
-	
 	
 	public Event() {
 		super();
@@ -27,6 +30,7 @@ public class Event {
 	}
 	
 	@JsonIgnore
+	@Value("${currentSeason}")
 	private String season;
 	
 	@JsonIgnore

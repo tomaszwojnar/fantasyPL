@@ -1,0 +1,10 @@
+com.twojnar.batcher
+com.twojnar.fantasy
+com.twojnar.fantasy.common
+com.twojnar.fantasy.fixture
+com.twojnar.fantasy.player
+com.twojnar.fantasy.player.predictions
+com.twojnar.fantasy.squad
+com.twojnar.fantasy.team
+com.twojnar.scrapper
+com.twojnar.taskRunner

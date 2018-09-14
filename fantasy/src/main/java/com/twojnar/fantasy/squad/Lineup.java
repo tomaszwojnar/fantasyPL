@@ -10,7 +10,7 @@ import com.fasterxml.jackson.annotation.JsonView;
 import com.twojnar.fantasy.common.View;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-@JsonView(View.Public.class)
+@JsonView(View.PublicGeneral.class)
 public class Lineup {
 	
 	@JsonIgnore

@@ -12,7 +12,7 @@ import com.twojnar.fantasy.common.View;
 
 @Document(collection = "teams")
 @JsonIgnoreProperties(ignoreUnknown = true)
-@JsonView(View.Public.class)
+@JsonView(View.PublicGeneral.class)
 public class Team implements Serializable {
 		
 	private String id;
@@ -50,9 +50,9 @@ public class Team implements Serializable {
     	super();
     }
     
-    public Team (int id) {
+    public Team (int code) {
     	super();
-    	this.fantasyId2018 = id;
+    	this.code = code;
     }
     
     @JsonIgnore

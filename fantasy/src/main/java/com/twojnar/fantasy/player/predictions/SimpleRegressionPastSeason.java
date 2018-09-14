@@ -47,12 +47,12 @@ public class SimpleRegressionPastSeason extends AbstractPredictionMethod {
 							simpleRegression.addData(strengthTeam - opponentStrength, y.getTotalPoints());
 							});
 						
-						int teamDifferential = player.getPlayerProfile().getTeam().equals(fixture.getHomeTeam()) ? fixture.getOverallHomeTeamAdvantage() : -fixture.getOverallHomeTeamAdvantage();
+						int teamDifferential = player.getPlayerProfile().getTeam().equals(fixture.getHomeTeam()) ? fixtureService.getOverallHomeTeamAdvantage(fixture) : -fixtureService.getOverallHomeTeamAdvantage(fixture);
 						
 						
 						return simpleRegression.predict(teamDifferential);
 					}
-			else throw new NoSuchElementException("No Last Season Data");
+			else throw new NoSuchElementException("No Last Season Data for player " + player.getPlayerProfile().getCode());
 	}
 			
 	public void gatherData(Player player, Fixture fixture) {

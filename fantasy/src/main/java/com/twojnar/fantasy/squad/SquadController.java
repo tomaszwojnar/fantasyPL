@@ -28,45 +28,51 @@ public class SquadController{
 	@Autowired
 	SquadService squadService;
 	
-	@RequestMapping(value = "/api/squad/{squad_id}", method = RequestMethod.GET)
-	@JsonView(View.Public.class)
-	public ResponseEntity squad(@PathVariable("squad_id") int squadId) throws JSONException, JsonParseException, JsonMappingException, IOException {
-			try {
-				return ResponseEntity.ok(squadService.getUpdatedSquad(squadId));
+	@RequestMapping(value = "/api/squads/{squad_id}", method = RequestMethod.GET)
+	@JsonView(View.PublicGeneral.class)
+	public ResponseEntity getSquad(@PathVariable("squad_id") int squadId) throws JSONException, JsonParseException, JsonMappingException, IOException {
+			Squad squad = squadService.getUpdatedSquad(squadId);
+			if (squad != null) return ResponseEntity.ok(squad);
+			else return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Squad not found.");
+	}
+	
+	@RequestMapping(value = "/api/squads/{squad_id}", method = RequestMethod.PUT)
+	@JsonView(View.PublicGeneral.class)
+	public ResponseEntity addSquad(@PathVariable("squad_id") int squadId) throws JSONException, JsonParseException, JsonMappingException, IOException {
+			try{
+				Squad squad = squadService.getUpdatedSquad(squadId);
+				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Squad already exists");
 			}
 			catch (NullPointerException e) {
-				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Incorrect team id.");
+				return ResponseEntity.ok(squadService.addSquad(squadId));
 			}
 	}
 	
-	@RequestMapping(value = "/api/squad/{squad_id}/lineups/{event_id}", method = RequestMethod.GET)
-	@JsonView(View.Public.class)
+	@RequestMapping(value = "/api/squads/{squad_id}/lineups/{event_id}", method = RequestMethod.GET)
+	@JsonView(View.PublicGeneral.class)
 	public ResponseEntity lineup(@PathVariable("squad_id") int squadId, @PathVariable("event_id") int eventId) throws JSONException, JsonParseException, JsonMappingException, IOException {
 			try {
-				return ResponseEntity.ok(squadService.getLineUp(squadId, eventId));
+				Squad squad = squadService.getUpdatedSquad(squadId);
+				return ResponseEntity.ok(squadService.getLineUp(squad, eventId));
 			}
 			catch (NullPointerException e) {
-				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Incorrect team id.");
+				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Squad not found.");
 			}
 			catch (NoSuchElementException e) {
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Event not yet played.");
 			}
 	}
 	
-	@RequestMapping(value = "/api/squad/{squad_id}/advice", method = RequestMethod.GET)
-	@JsonView(View.Public.class)
+	@RequestMapping(value = "/api/squads/{squad_id}/advice", method = RequestMethod.GET)
+	@JsonView(View.PublicGeneral.class)
 	public ResponseEntity lineup(@PathVariable("squad_id") int squadId, @RequestParam(value = "method", required = false) String method) throws JSONException, JsonParseException, JsonMappingException, IOException {
-			try {
-				return ResponseEntity.ok(squadService.getTransferAdvice(squadId));
-				//return ResponseEntity.ok(squadService.getTransferAdviceUsingMethod(squadId, method));
-			}	
-
-			
-			catch (NoSuchElementException e) {
-				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Event not yet played.");
-			}
+		Squad squad = squadService.getUpdatedSquad(squadId);
+		if (squad == null) return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Squad not found.");
+		try {
+			return ResponseEntity.ok(squadService.getTransferAdvice(squad));
+		}
+		catch (NoSuchElementException e) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Event not yet played.");
+		}
 	}
-	
-	
-
 }

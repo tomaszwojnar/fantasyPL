@@ -134,7 +134,7 @@ public class AttackDefenceRegressionLastSeason extends AbstractPredictionMethod 
 						}
 						return simpleRegression.predict(teamDifferential);
 					}
-			else throw new NoSuchElementException("No Last Season Data");
+			else throw new NoSuchElementException("No Last Season Data for player " + player.getPlayerProfile().getCode());
 	}
 			
 	public void gatherData(Player player, Fixture fixture) {

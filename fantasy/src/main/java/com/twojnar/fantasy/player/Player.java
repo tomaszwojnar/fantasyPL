@@ -13,7 +13,7 @@ import com.twojnar.fantasy.common.View;
 
 @Document(collection = "players")
 @JsonIgnoreProperties(ignoreUnknown = true)
-@JsonView(View.Public.class)
+@JsonView(View.PublicGeneral.class)
 public class Player {
 	
 	@Autowired
@@ -27,8 +27,10 @@ public class Player {
 	@JsonIgnore
 	private List<PlayerAggregates> aggregates;
 	
+	@JsonView(View.PublicDetails.class)
 	private List<HistorySeason> historySeasons = new ArrayList<HistorySeason>();
 	
+	@JsonView(View.PublicDetails.class)
 	private List<FullPerformance> performances = new ArrayList<FullPerformance>();
 	
 

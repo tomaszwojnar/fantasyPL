@@ -14,10 +14,12 @@ import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
+import com.twojnar.fantasy.common.ApplicationException;
 import com.twojnar.fantasy.common.FantasyStatus;
 import com.twojnar.fantasy.player.Player;
 import com.twojnar.fantasy.player.PlayerService;
@@ -45,20 +47,37 @@ public class SquadService {
 		return squadRepository.findByFantasyId(id);
 	}
 	
-	
-	public void addSquad(Squad squad) {
+	public void saveSquad(Squad squad) {
 		squadRepository.insert(squad);
 	}
 	
-	public Squad downloadData(int id) throws JsonParseException, JsonMappingException, IOException, JSONException {
+	public Squad addSquad(int squadId) {
+		Squad squad = this.downloadData(squadId);
+		this.saveSquad(squad);
+		return squad;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public Squad downloadData(int id) {
 		Squad squad = new Squad();
-		List<Squad> squads =  (List<Squad>) scrapper.scrapField("https://fantasy.premierleague.com/drf/entry/" + id, "entry", new Squad());
+		
+		List<Squad> squads;
+		try {
+			squads = (List<Squad>) scrapper.scrapField("https://fantasy.premierleague.com/drf/entry/" + id, "entry", new Squad());
+		} catch (IOException | JSONException e) {
+			throw new ApplicationException("FantasyPL seems unreachable.");
+		}
 		if (squads.size() == 1) {
 			squad = squads.get(0);
 		}
 		squad.setLineups(new ArrayList<Lineup>());
 		for (int i = 1; i <= fantasyStatus.getCurrentEvent(); i++) {
-			List<Lineup> lineups  =  (List<Lineup>) scrapper.scrapAll("https://fantasy.premierleague.com/drf/entry/" + id +"/event/" + i +"/picks", new Lineup());
+			List<Lineup> lineups;
+			try {
+				lineups = (List<Lineup>) scrapper.scrapAll("https://fantasy.premierleague.com/drf/entry/" + id +"/event/" + i +"/picks", new Lineup());
+			} catch (IOException e) {
+				throw new ApplicationException("FantasyPL seems unreachable.");
+			}
 			Lineup lineup = lineups.get(0);
 			for (Pick pick : lineup.getPicks()) {
 				pick.setPerformances(playerService.getPerformancesByPlayerAndRound(
@@ -68,22 +87,36 @@ public class SquadService {
 			squad.getLineups().add(lineup);
 		}
 		squad.setLastChecked(new Date());
-		this.saveSquadToDB(squad);
 		return squad;
 	}
 	
+	@SuppressWarnings("unchecked")
 	@CacheEvict
-	public Squad updateData(int id) throws JsonParseException, JsonMappingException, IOException, JSONException {
+	public Squad updateData(int id) {
 		Squad existingSquad = this.getSquadByFantasyId(id);
 		Squad squad = new Squad();
-		List<Squad> squads =  (List<Squad>) scrapper.scrapField("https://fantasy.premierleague.com/drf/entry/" + id, "entry", new Squad());
+			List<Squad> squads;
+			try {
+				squads = (List<Squad>) scrapper.scrapField("https://fantasy.premierleague.com/drf/entry/" + id, "entry", new Squad());
+			}
+			catch (IOException e) {
+				throw new ApplicationException("FantasyPL seems unreachable.");
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				throw new ApplicationException("JSON response from Fantasy PL not parseable");
+			}
 		if (squads.size() == 1) {
 			squad = squads.get(0);
 		}
 		squad.setLineups(existingSquad.getLineups());
 		squad.setId(existingSquad.getId());
 		for (int i = squad.getLatestLineup().getEvent(); i <= fantasyStatus.getCurrentEvent(); i++) {
-			List<Lineup> lineups  =  (List<Lineup>) scrapper.scrapAll("https://fantasy.premierleague.com/drf/entry/" + id +"/event/" + i +"/picks", new Lineup());
+			List<Lineup> lineups = new ArrayList<Lineup>();
+			try {
+				lineups = (List<Lineup>) scrapper.scrapAll("https://fantasy.premierleague.com/drf/entry/" + id +"/event/" + i +"/picks", new Lineup());
+			} catch (IOException e) {
+				throw new ApplicationException("FantasyPL seems unreachable.");
+			}
 			Lineup lineup = lineups.get(0);
 			for (Pick pick : lineup.getPicks()) {
 				pick.setPerformances(playerService.getPerformancesByPlayerAndRound(
@@ -98,19 +131,17 @@ public class SquadService {
 		return existingSquad;
 	}
 	
-	public Squad getUpdatedSquad(int id) throws JsonParseException, JsonMappingException, IOException, JSONException {
+	@Nullable
+	public Squad getUpdatedSquad(int id) {
 		Squad squad = this.getSquadByFantasyId(id);
-		if (squad == null) {
-				return this.downloadData(id);
-			}
-		else {
-			if (squad.getLastChecked().before(fantasyStatus.getCurrentDeadline())) return this.updateData(id);
-			else return squad;
+		if (squad != null && squad.getLastChecked().before(fantasyStatus.getCurrentDeadline())) {
+				return this.updateData(id);
 		}
+		else return squad;
 	}
 	
-	public Lineup getLineUp(int squadId, int eventId) throws JsonParseException, JsonMappingException, IOException, JSONException {
-		return this.getUpdatedSquad(squadId).getLineupByEvent(eventId);
+	public Lineup getLineUp(Squad squad, int eventId) throws JsonParseException, JsonMappingException, IOException, JSONException {
+		return squad.getLineupByEvent(eventId);
 	}
 	
 	public void addLineup(Squad squad, Lineup lineup) {
@@ -148,7 +179,6 @@ public class SquadService {
 						x.getPlayerProfile(), 
 						Math.round(playerService.getPredictedPointsForNextXGames(x, noOfGames) - playerService.getPredictedPointsForNextXGames(player, noOfGames)));
 				swaps.add(swap);
-				System.out.println(swap.getBenefit());
 			}
 			);
 		return swaps;
@@ -179,8 +209,7 @@ public class SquadService {
 		return swaps;
 	}
 	
-	public PlayerAdvice getTransferAdvice(int squadId) throws JsonParseException, JsonMappingException, IOException, JSONException {
-		Squad squad = this.getUpdatedSquad(squadId);
+	public PlayerAdvice getTransferAdvice(Squad squad) throws JsonParseException, JsonMappingException, IOException, JSONException {
 		PlayerAdvice advice = new PlayerAdvice();
 		for (Pick pick : squad.getLatestLineup().getPicks()) {
 			this.findBetterAlternatives
@@ -194,8 +223,7 @@ public class SquadService {
 		return advice.sort().limit(10);
 	}
 	
-	public PlayerAdvice getTransferAdviceUsingMethod(int squadId, String method) throws JsonParseException, JsonMappingException, IOException, JSONException {
-		Squad squad = this.getUpdatedSquad(squadId);
+	public PlayerAdvice getTransferAdviceUsingMethod(Squad squad, String method) throws JsonParseException, JsonMappingException, IOException, JSONException {
 		PlayerAdvice advice = new PlayerAdvice();
 		for (Pick pick : squad.getLatestLineup().getPicks()) {
 			int noOfGames = ("FantasyPLWebsite".equals(method)) ? 1 : 5;
@@ -210,4 +238,6 @@ public class SquadService {
 		}
 	return advice.sort().limit(10);
 	}
+	
+	
 }

@@ -10,13 +10,14 @@ import com.twojnar.fantasy.player.FullPerformance;
 import com.twojnar.fantasy.player.PlayerProfile;
 import com.twojnar.fantasy.player.PlayerService;
 
-@JsonView(View.Public.class)
+@JsonView(View.PublicGeneral.class)
 public class Pick {
 	
 	
 	@JsonProperty("element")
 	private PlayerProfile playerProfile;
 	
+	@JsonView(View.PublicDetails.class)
 	private List<FullPerformance> performances;
 	
 	@JsonProperty("position")

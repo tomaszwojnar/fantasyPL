@@ -12,7 +12,7 @@ import com.twojnar.fantasy.common.View;
 import com.twojnar.fantasy.team.Team;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-@JsonView(View.Public.class)
+@JsonView(View.PublicGeneral.class)
 public class PlayerProfile {
 	
 	@JsonProperty("id")

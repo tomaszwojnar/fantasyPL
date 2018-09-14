@@ -18,7 +18,7 @@ import com.twojnar.fantasy.team.Team;
 
 @Document(collection = "fixtures")
 @JsonIgnoreProperties(ignoreUnknown = true)
-@JsonView(View.Public.class)
+@JsonView(View.PublicGeneral.class)
 public class Fixture {
 	
 	
@@ -45,7 +45,7 @@ public class Fixture {
 	private int event;
 	
 	 /**
-     * Brzydki hack - naleÅ¼y zmieniÄ‡ na klasÄ™
+     * Brzydki hack - nale¿y zmieniæ na klasê
      */
 	
 	@JsonProperty("stats")
@@ -214,9 +214,6 @@ public class Fixture {
 		this.stats = stats;
 	}
 	
-	public int getOverallHomeTeamAdvantage() {
-		return this.getHomeTeam().getStrength_overall_home() - this.getAwayTeam().getStrength_overall_home();
-	}
 
 	public String getSeason() {
 		return season;

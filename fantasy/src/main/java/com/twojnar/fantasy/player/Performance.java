@@ -5,6 +5,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.apache.commons.math3.stat.descriptive.rank.Median;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -563,7 +564,7 @@ public abstract class Performance {
 		else return null;
 	}
 	
-	@JsonIgnore
+	/*@JsonIgnore
 	public Prediction getLatestPrediction() {
 		if (this.predictions.size() == 0) return null;
 		else {
@@ -574,7 +575,6 @@ public abstract class Performance {
 	@JsonIgnore
 	public List<Prediction> getLatestPredictionPerMethod() {
 		List<Prediction> latestPredictions = new ArrayList<Prediction>();
-		if (this.predictions.size() == 0) return null;
 		for (Prediction prediction : this.predictions.stream().sorted(Comparator.comparing(Prediction::getDatePredictionMade, Comparator.nullsLast(Comparator.reverseOrder()))).collect(Collectors.toList())) {
 			if (prediction.getPredictedPoints() > 0 &&
 					!latestPredictions.stream().filter(p -> p.getPredictionMethodName().equals(prediction.getPredictionMethodName())).findFirst().isPresent()) {
@@ -598,4 +598,14 @@ public abstract class Performance {
 		}
 		return avg;
 	}
+	
+	@JsonIgnore
+	public double getMeanPrediction() {
+		List<Prediction> predictions = this.getLatestPredictionPerMethod();
+		double[] predictedPoints = new double[predictions.size()];
+		predictions.stream().forEach(x -> predictedPoints[predictions.indexOf(x)] = x.getPredictedPoints().doubleValue());
+		Median median = new Median();
+		double medianValue = median.evaluate(predictedPoints);
+		return medianValue;
+	}*/
 }

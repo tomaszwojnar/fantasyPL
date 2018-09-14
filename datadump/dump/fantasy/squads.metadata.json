@@ -1,0 +1,1 @@
+{"options":{},"indexes":[{"v":2,"key":{"_id":1},"name":"_id_","ns":"fantasy.squads"},{"v":2,"unique":true,"key":{"fantasyId":1},"name":"fantasyId","ns":"fantasy.squads"}],"uuid":"4a182ee14882428eb2d0d148bc33a707"}
